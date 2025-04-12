@@ -1,0 +1,140 @@
+<div class="flex items-center justify-center mt-5 gap-5" x-data="{loginForm:true, pwRecForm:false}">
+  <div x-show="loginForm" class="w-full max-w-md">
+    {% if shop.checkout.guest_login %}
+      <h2 class="text-2xl font-bold text-center text-gray-800 mb-2">
+        Continue As a Guest
+      </h2>
+      {% form 'guest_login' %}
+        <div>
+          <button
+            type="submit"
+            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-lime-500 hover:bg-white hover:text-lime-500 hover:border-lime-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500 focus-visible my-4"
+            aria-label="Recover your Password">
+            Continue
+          </button>
+        </div>
+      {% endform %}
+    {% else %}
+      <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="px-6 py-8">
+          <h2 class="text-2xl font-bold text-center text-gray-800 mb-2">
+            Login to your account
+          </h2>
+          {% form 'customer_login' %}
+            {% if form.errors %}
+              <div class="relative border border-red-400 bg-red-100 text-red-700 px-4 py-3" role="alert">
+                <strong class="font-bold">Error!</strong>
+                <p class="block sm:inline">{{ form.errors | default_errors }}</p>
+              </div>
+            {% endif %}
+            <div class="space-y-2">
+              <label for="email-address" class="block text-sm font-medium text-gray-700">Email Address</label>
+              <input
+                type="email"
+                id="email-address"
+                name="customer[email]"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-lime-500 focus:border-lime-500 focus-visible"
+                aria-required="true"
+                placeholder="Email Address"
+                autocomplete="email">
+            </div>
+
+            <div class="space-y-2">
+              <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+              {% if form.password_needed %}
+                <input
+                  type="password"
+                  id="password"
+                  name="customer[password]"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-lime-500 focus:border-lime-500 focus-visible"
+                  aria-required="true"
+                  placeholder="Password"
+                  autocomplete="current-password">
+              {% endif %}
+            </div>
+            <div>
+              <button
+                type="submit"
+                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-lime-500 hover:bg-white hover:text-lime-500 hover:border-lime-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500 focus-visible my-4"
+                aria-label="Sign in to your account">
+                Sign in
+              </button>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                <input
+                  id="remember-me"
+                  name="remember-me"
+                  type="checkbox"
+                  class="h-4 w-4 text-lime-500 focus:ring-lime-600 border-gray-300 rounded focus-visible">
+                <label for="remember-me" class="ml-2 block text-sm text-gray-700">
+                  Remember me
+                </label>
+              </div>
+              <div class="text-sm">
+                <a
+                  x-on:click="loginForm=false; pwRecForm=true"
+                  href="#"
+                  class="font-medium text-lime-500 hover:text-lime-600 focus-visible">
+                  Forgot your password?
+                </a>
+              </div>
+            </div>
+            <div class="text-sm text-center mt-6">
+              <p class="text-gray-600">
+                Don't have an account?
+                <a href="{{routes.account_register_url}}" class="font-medium text-lime-600 hover:text-lime-500 focus-visible">
+                  Sign up
+                </a>
+              </p>
+            </div>
+          {% endform %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+  <div x-show="pwRecForm" class="w-full max-w-md">
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+      <div class="px-6 py-8">
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-2">
+          Recover Password
+        </h2>
+        {% form 'recover_customer_password' %}
+          {% if form.errors %}
+            <div class="relative border border-red-400 bg-red-100 text-red-700 px-4 py-3" role="alert">
+              <strong class="font-bold">Error!</strong>
+              <p class="block sm:inline">{{ form.errors | default_errors }}</p>
+            </div>
+          {% endif %}
+          <div class="space-y-2">
+            <label for="email-address" class="block text-sm font-medium text-gray-700">Email Address</label>
+            <input
+              type="email"
+              id="email-address"
+              name="customer[email]"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-lime-500 focus:border-lime-500 focus-visible"
+              aria-required="true"
+              placeholder="Email Address"
+              autocomplete="email">
+          </div>
+          <div>
+            <button
+              type="submit"
+              class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-lime-500 hover:bg-white hover:text-lime-500 hover:border-lime-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500 focus-visible my-4"
+              aria-label="Recover your Password">
+              Recover Password
+            </button>
+          </div>
+          <div class="text-sm text-center mt-6">
+            <a
+              x-on:click="loginForm=true; pwRecForm=false"
+              href="#"
+              class="font-medium text-lime-500 hover:text-lime-600 focus-visible">
+              Back to Login
+            </a>
+          </div>
+        {% endform %}
+      </div>
+    </div>
+  </div>
+</div>

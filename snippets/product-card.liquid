@@ -1,0 +1,46 @@
+<div class="group relative bg-white rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1">
+  <a href="{{ product.url }}" class="block">
+    <div class="relative pb-[100%] overflow-hidden">
+      {% if product.featured_image %}
+        <img
+          src="{{ product.featured_image | image_url: width: '400', crop: 'center' }}"
+          alt="{{ product.featured_image.alt | escape }}"
+          class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+          width="400"
+          height="400">
+      {% else %}
+        {{ "product-1" | placeholder_svg_tag: "absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" }}
+      {% endif %}
+
+      {% if product.compare_at_price > product.price %}
+        <div class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">Sale</div>
+      {% endif %}
+    </div>
+
+    <div class="p-4">
+      <h2 class="text-sm sm:text-base font-medium text-gray-900 line-clamp-2 group-hover:text-primary-600 transition-colors duration-200">
+        {{ product.title }}
+      </h2>
+
+      {% if product.vendor %}
+        <p class="mt-1 text-xs text-gray-500">{{ product.vendor }}</p>
+      {% endif %}
+
+      <div class="mt-2 flex items-center justify-between">
+        <div>
+          {% if product.compare_at_price > product.price %}
+            <span class="text-sm font-medium text-gray-900">{{ product.price | money }}</span>
+            <span class="ml-1 text-xs text-gray-500 line-through">{{ product.compare_at_price | money }}</span>
+          {% else %}
+            <span class="text-sm font-medium text-gray-900">{{ product.price | money }}</span>
+          {% endif %}
+        </div>
+
+        <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <span class="text-xs text-primary-600 font-medium">View →</span>
+        </div>
+      </div>
+    </div>
+  </a>
+</div>

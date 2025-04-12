@@ -1,0 +1,211 @@
+<header class="bg-gray-100 flex justify-around p-2 text-xs uppercase">
+  <span>
+    PHONE: +01 256 25 235 &nbsp;|&nbsp; EMAIL: info@eiser.com
+  </span>
+  <span>
+    GIFT CARD &nbsp;&nbsp;&nbsp;| &nbsp;&nbsp;&nbsp;TRACK ORDER &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; CONTACT US
+  </span>
+</header>
+{% assign main_value = linklists[section.settings.menu].links %}
+<div class="relative bg-white" x-data="{mobileMenuOpen:false, searchBarOpen:false}">
+  <div class="mx-auto px-4 sm:px-6">
+    <div class="flex justify-center items-start py-6 md:justify-center md:space-x-10">
+      <!-- STORE NAME / STORE LOGO -->
+      <div class="flex justify-around lg:flex-1 truncate">
+        <a href="{{routes.root_url}}">
+          <img
+            src="{{ 'logo.png' | asset_url }}"
+            alt=""
+            width=""
+            height="">
+        </a>
+      </div>
+      <div class="-mr-2 -my-2 ml-3 ">
+        <button
+          x-on:click="mobileMenuOpen=true"
+          type="button"
+          class="bg-white p-2 md:hidden inline-flex items-center justify-center focus:outline-none">
+          {% render 'icon-menu' %}
+        </button>
+      </div>
+      <!-- NAVIGATION MENU -->
+      <nav class="hidden md:flex space-x-10 sticky gap-4">
+        {% for link in main_value %}
+          {% if link.links != blank %}
+            <div class="relative" x-data="{open:false}">
+              <button
+                x-on:click="open=!open"
+                type="button"
+                class="inline-flex font-medium items-center text-sm text-gray-800 hover:text-gray-600 uppercase ">
+                {{ link.title }}
+                {% render 'drop-down' %}
+              </button>
+              <div class="w-full flex justify-center -z-10">
+                <div class="flex justify-center">
+                  <div
+                    x-show="open"
+                    @click:away="open=false"
+                    class="border-t border-gray-100 shadow z-10 uppercase"
+                    x-cloak>
+                    <div class="bg-white">
+                      {% for sublink in link.links %}
+                        <a class="p-4 flex items-start hover:text-white hover:bg-lime-500" href="{{ sublink.url }}">
+                          <div>
+                            <p class="text-inherit text-sm">{{ sublink.title }}</p>
+                          </div>
+                        </a>
+
+                      {% endfor %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <div class="relative">
+              <a href="{{link.url}}" class="text-sm font-medium uppercase text-gray-800 mx-4 hover:text-gray-600 {% if link.active %} text-lime-500 {% endif %}">
+                {{- link.title -}}
+              </a>
+            </div>
+          {% endif %}
+        {% endfor %}
+      </nav>
+
+      <div class="hidden md:flex items-center justify-start md:flex-1 space-x-5">
+        <button
+          type="button"
+          class="whitespace-nowrap text-base text-gray-800 hover:text-gray-600 mx-4"
+          x-on:click="searchBarOpen=true">
+          {% render 'icon-search' %}
+        </button>
+        <a href="{{routes.cart_url}}" class="whitespace-nowrap text-sm mx-4 text-gray-800 {% if request.path == routes.cart_url  %} text-lime-500 font-medium {% endif %}">
+          {% render 'shopping-icon' %}
+        </a>
+        {% if shop.customer_accounts_enabled %}
+          {% if customer %}
+            <a href="{{routes.account_logout_url}}" class="text-sm font-medium text-gray-800 hover:text-gray-600 mx-4 uppercase">Logout</a>
+            <a href="{{routes.account_url}}" class="text-sm font-medium text-gray-800 hover:text-gray-600 mx-4 uppercase">Account</a>
+          {% else %}
+            <a href="{{routes.account_login_url}}" class="text-sm font-medium text-gray-800 hover:text-gray-600 mx-4 uppercase">Login</a>
+            <a href="{{routes.account_register_url}}" class="text-sm font-medium text-gray-800 hover:text-gray-600 mx-4 uppercase">Register</a>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+    <!-- MOBILE MENU CONTAINER -->
+    <div x-show="mobileMenuOpen" class="absolute z-10 top-0 inset-x-0 p-2 transform origin-top-left md:hidden">
+      <div class="shadow-lg rounded-lg ring-1 ring-black ring-opacity-5 bg-white w-full">
+        <div class="p-5 divide-y-2 divide-gray-50">
+          <!-- MOBILE MENU HEADER TITLE PLUS CLOSE BUTTON -->
+          <div class="flex items-center justify-between pb-3">
+            <div>
+              <h1 class="text-lg text-gray-500">{{ shop.name }}</h1>
+            </div>
+            <div class="-mr-2">
+              <button
+                type="button"
+                x-on:click="mobileMenuOpen=false"
+                class="bg-white rounded-md p-2 text-gray-500">
+                {% render 'close-icon' %}
+              </button>
+            </div>
+          </div>
+
+          <!-- NAVIGATION LINKS FOR MOBILE MENU -->
+          <div class="pt-3">
+            <nav class="grid gap-y-7">
+              {% for link in main_value %}
+                {% assign link_handle = link.handle | replace: '-', '_' %}
+                {% if link.links != blank %}
+                  <div x-data="{ {{link_handle}}:false }" class="relative">
+                    <button
+                      x-on:click="{{link_handle}}=!{{link_handle}}"
+                      type="button"
+                      class="text-base text-gray-500 hover:text-gray-900 flex items-center justify-between w-full">
+                      <div>{{ link.title }}</div>
+                      {% render 'drop-down' %}
+                    </button>
+                    {% for sublink in link.links %}
+                      <div x-show="{{link_handle}}" class="grid gap-y-7 py-3">
+                        <a href="{{sublink.url}}" class="-m-3 p-3 mt-2 flex items-center rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-50">
+                          <span class="ml-3 text-base font-medium text-gray-500">{{ sublink.title }}</span>
+                        </a>
+                      </div>
+                    {% endfor %}
+                  </div>
+
+                {% else %}
+                  <a href="{{link.url}}" class="-m-3 p-3 flex items-center rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-50">
+                    {{ link.title }}
+                  </a>
+                {% endif %}
+              {% endfor %}
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div x-show="searchBarOpen" class="w-full fixed top-0 left-0 bg-white border-b shadow-lg z-50">
+    <div class="container mx-auto px-4 py-6 relative">
+      <button
+        x-on:click="searchBarOpen=false"
+        class="absolute top-6 right-4 text-gray-500 hover:text-gray-700 transition-colors"
+        aria-label="Close search">
+        {% render 'close-icon'
+          , class: 'w-6 h-6' %}
+      </button>
+
+      <div class="max-w-2xl mx-auto">
+        <form
+          action="{{routes.search_url}}"
+          method="get"
+          role="search"
+          class="relative">
+          <div class="relative">
+            <input
+              type="search"
+              name="q"
+              class="w-full py-4 pl-6 pr-16 text-lg bg-gray-50 rounded-full border-2 border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none transition-all"
+              placeholder="Search products..."
+              aria-label="Search products"
+              autocomplete="off"
+              autofocus>
+            <button
+              type="submit"
+              class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-primary-600 transition-colors"
+              aria-label="Submit search">
+              {% render 'icon-search'
+                , class: 'w-8 h-8' %}
+            </button>
+          </div>
+
+          <input
+            type="hidden"
+            name="type"
+            value="product">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "text",
+        "id": "mobile_menu",
+        "label": "Title",
+        "default": "Menu",
+        "info": "Mobile Window"
+      }, {
+        "type": "link_list",
+        "id": "menu",
+        "label": "Header",
+        "default": "main-menu"
+      }
+    ]
+  }
+{% endschema %}

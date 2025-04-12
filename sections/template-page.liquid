@@ -1,0 +1,110 @@
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+  <!-- Article Header -->
+  <header class="mb-10">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold text-primary-900 mb-4">{{ page.title }}</h1>
+
+    <div class="flex flex-col sm:flex-row sm:items-center text-gray-600 mb-6">
+      {% if page.author %}
+        <div class="flex items-center mr-6 mb-2 sm:mb-0">
+          {% if page.author.image %}
+            <img
+              src="{{ page.author.image | asset_url }}"
+              alt="{{ page.author.name }}"
+              class="w-10 h-10 rounded-full mr-3 object-cover"
+              width=""
+              height=""
+              >
+          {% endif %}
+          <span class="font-medium">{{ page.author.name | default: page.author }}</span>
+        </div>
+      {% endif %}
+
+      {% if page.date %}
+        <time datetime="{{ page.date | date: '%Y-%m-%d' }}" class="flex items-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 mr-2"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          {{ page.date | date: '%B %d, %Y' }}
+        </time>
+      {% endif %}
+    </div>
+
+    {% if page.tags.size > 0 %}
+      <div class="flex flex-wrap gap-2 mb-6">
+        {% for tag in page.tags %}
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-100 text-primary-800">
+            {{ tag }}
+          </span>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% if page.featured_image %}
+      <div class="relative h-0 pb-[56.25%] overflow-hidden rounded-xl mb-8">
+        <img
+          src="{{ page.featured_image| asset_url }}"
+          alt="{{ page.featured_image_alt | default: page.title }}"
+          class="absolute inset-0 w-full h-full object-cover"
+          width=""
+          height="">
+      </div>
+    {% endif %}
+  </header>
+
+  <!-- Article Content -->
+  <div class="article-content">
+    {{ page.content }}
+  </div>
+
+  <!-- Article Footer -->
+  <footer class="mt-16 pt-8 border-t border-gray-200">
+    {% if page.author.bio %}
+      <div class="flex flex-col sm:flex-row items-start sm:items-center mb-8 p-6 bg-gray-100 rounded-lg">
+        {% if page.author.image %}
+          <img
+            src="{{ page.author.image| asset_url }}"
+            alt="{{ page.author.name }}"
+            class="w-16 h-16 rounded-full mr-6 mb-4 sm:mb-0 object-cover"
+            width=""
+            height=""
+            >
+        {% endif %}
+        <div>
+          <h3 class="text-lg font-bold mb-2">About {{ page.author.name }}</h3>
+          <p class="text-gray-700">{{ page.author.bio }}</p>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if page.related_posts.size > 0 %}
+      <div class="mt-12">
+        <h3 class="text-xl font-bold mb-6">Related Articles</h3>
+        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {% for post in page.related_posts limit: 3 %}
+            <a href="{{ post.url }}" class="group">
+              <div class="h-48 mb-4 overflow-hidden rounded-lg">
+                <img
+                  src="{{ post.featured_image| asset_url }}"
+                  alt="{{ post.title }}"
+                  class="w-full h-full object-cover transition duration-300 group-hover:scale-105"
+                  width=""
+                  height="">
+              </div>
+              <h4 class="font-medium text-lg mb-2 group-hover:text-primary-600 transition">{{ post.title }}</h4>
+              <p class="text-gray-600 text-sm">{{ post.date | date: '%B %d, %Y' }}</p>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </footer>
+</div>
