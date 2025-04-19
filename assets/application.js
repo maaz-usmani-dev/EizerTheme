@@ -13,12 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const cart = await response.json();
             if (cartCountElement) {
                 cartCountElement.innerText = cart.item_count;
-
-                // Add bump animation
-                cartCountElement.classList.add('cart-bump');
-                setTimeout(() => {
-                    cartCountElement.classList.remove('cart-bump');
-                }, 300);
             }
         } catch (error) {
             console.error('Cart count update error:', error);
@@ -45,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         quantity: 1
                     })
                 });
-
                 if (!response.ok) throw new Error('Network response was not ok');
                 btn.innerText = 'Added';
 
@@ -79,7 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const productId = btn.getAttribute('data-var');
 
         if (currentWishlist.includes(productId)) {
-            btn.classList.add('text-red-400');
+            btn.classList.replace('text-gray-700', 'text-red-400');
+            btn.classList.remove('hover:text-white')
         }
 
         btn.addEventListener('click', function (e) {
@@ -89,10 +83,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (wishlist.includes(Id)) {
                 wishlist = wishlist.filter(id => id !== Id)
-                btn.classList.remove('text-red-400');
+                btn.classList.replace('text-red-400', 'text-gray-700');
+                btn.classList.add("hover:text-white")
             } else {
                 wishlist.push(Id);
-                btn.classList.add('text-red-400');
+                btn.classList.replace('text-gray-700', 'text-red-400');
+                btn.classList.remove('hover:text-white')
             }
 
             setWishlist(wishlist);

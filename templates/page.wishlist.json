@@ -1,8 +1,11 @@
 {
     "sections": {
+        "page":{
+            "type": "template-page"
+        },
         "Template":{
             "type": "wishlist"
         }
     },
-    "order": ["Template"]
+    "order": ["page","Template"]
 }
