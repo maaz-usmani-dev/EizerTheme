@@ -1,0 +1,40 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="mb-8">
+    <a class="text-md md:text-md font-light text-gray-900 hover:underline hover:font-medium" href="/collections">Back to Collections</a>
+    <h1 class="text-3xl md:text-4xl font-bold text-gray-900">{{ collection.title }}</h1>
+    {% if collection.description != blank %}
+      <div class="mt-4 text-gray-600">{{ collection.description }}</div>
+    {% endif %}
+  </div>
+
+  {% if collection.products.size == 0 %}
+    <div class="text-center py-12">
+      <p class="text-lg text-gray-600">No products found in this collection</p>
+    </div>
+  {% else %}
+    {% paginate collection.products by section.settings.products_per_page %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {% for product in collection.products %}
+          {% render 'product-card'
+            , product: product %}
+        {% endfor %}
+      </div>
+      {% render "pagination"
+        , paginate: paginate %}
+    {% endpaginate %}
+  {% endif %}
+</div>
+
+{% schema %}
+  {
+    "name": "Template Collection",
+    "settings": [
+      {
+        "type": "number",
+        "id": "products_per_page",
+        "default": 6,
+        "label": "No of Products Per Page"
+      }
+    ]
+  }
+{% endschema %}

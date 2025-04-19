@@ -1,46 +1,85 @@
-<div class="group relative bg-white rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg transform hover:-translate-y-1">
-  <a href="{{ product.url }}" class="block">
-    <div class="relative pb-[100%] overflow-hidden">
-      {% if product.featured_image %}
-        <img
-          src="{{ product.featured_image | image_url: width: '400', crop: 'center' }}"
-          alt="{{ product.featured_image.alt | escape }}"
-          class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          loading="lazy"
-          width="400"
-          height="400">
-      {% else %}
-        {{ "product-1" | placeholder_svg_tag: "absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" }}
-      {% endif %}
-
-      {% if product.compare_at_price > product.price %}
-        <div class="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">Sale</div>
-      {% endif %}
-    </div>
-
-    <div class="p-4">
-      <h2 class="text-sm sm:text-base font-medium text-gray-900 line-clamp-2 group-hover:text-primary-600 transition-colors duration-200">
-        {{ product.title }}
-      </h2>
-
-      {% if product.vendor %}
-        <p class="mt-1 text-xs text-gray-500">{{ product.vendor }}</p>
-      {% endif %}
-
-      <div class="mt-2 flex items-center justify-between">
-        <div>
-          {% if product.compare_at_price > product.price %}
-            <span class="text-sm font-medium text-gray-900">{{ product.price | money }}</span>
-            <span class="ml-1 text-xs text-gray-500 line-through">{{ product.compare_at_price | money }}</span>
-          {% else %}
-            <span class="text-sm font-medium text-gray-900">{{ product.price | money }}</span>
-          {% endif %}
-        </div>
-
-        <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <span class="text-xs text-primary-600 font-medium">View →</span>
-        </div>
+<div class="group relative max-w-xs w-full bg-white rounded shadow-sm hover:shadow-md text-gray-800 transition-all duration-300  hover:text-[#a6e06c]">
+  <!-- Product image -->
+  <div class="relative overflow-hidden">
+    {% if product.featured_image %}
+      <img
+        src="{{ product.featured_image | img_url: '400x400', crop: 'center' }}"
+        alt="{{ product.title | escape| truncate: 15 }}"
+        class="w-full h-auto object-cover"
+        width=""
+        height="">
+    {% else %}
+      <div class="w-full h-64 bg-gray-200 flex items-center justify-center">
+        <span class="text-gray-400">No image</span>
       </div>
+    {% endif %}
+    <!-- Green strip with action buttons that appears on hover -->
+    <div class="absolute bottom-0 left-0 w-full h-12 bg-[#a6e06cbe] flex justify-center gap-3 items-center space-x-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ">
+      <!-- View button -->
+      <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform text-gray-700 hover:bg-green-400 hover:text-white">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-inherit"
+          fill="none"
+          viewBox="0 0 24 24"
+          z
+          stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        </svg>
+      </button>
+
+      <!-- Wishlist button -->
+      <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform text-gray-700 hover:bg-green-400 hover:text-white" id="wishlist" data-var="{{product.handle}}">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-inherit"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+        </svg>
+      </button>
+
+      <!-- Cart button -->
+      <button
+        class="w-10 h-10 bg-white rounded-full text-gray-700 flex items-center justify-center hover:scale-110 hover:bg-green-400 hover:text-white transition-transform"
+        data-var="{{product.selected_or_first_available_variant.id}}"
+        id="cart-btn">
+        {% render 'shopping-icon' %}
+      </button>
+
     </div>
-  </a>
+  </div>
+
+  <!-- Product info -->
+  <div class="p-4">
+    <!-- Product title - changes to green on hover -->
+    <a href="{{product.url}}" class="text-base font-medium uppercase tracking-wider text-inherit">
+      {{ product.title }}
+    </a>
+
+    <!-- Product price -->
+    <div class="flex items-center gap-3 mt-2">
+      <span class="text-lg font-bold text-gray-900">{{ product.price | default: "$25.00" | money }}</span>
+      {% if product.compare_at_price > product.price %}
+        <span class="text-sm text-gray-500 line-through">{{ product.compare_at_price | default: "$35.00" | money }}</span>
+      {% else %}
+        <!-- Fallback for the example image -->
+        <span class="text-sm text-gray-500 line-through">$35.00</span>
+      {% endif %}
+    </div>
+  </div>
 </div>

@@ -12,7 +12,7 @@
           {% if part.is_link %}
             <a href="{{ part.url }}" class="inline-flex items-center justify-center w-10 h-10 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">{{ part.title }}</a>
           {% elsif part.title == paginate.current_page %}
-            <span class="inline-flex items-center justify-center w-10 h-10 border border-indigo-500 rounded-md text-sm font-medium text-white bg-indigo-600">{{ part.title }}</span>
+            <span class="inline-flex items-center justify-center w-10 h-10 border border-gray-300 rounded-md text-sm font-medium text-white bg-lime-500">{{ part.title }}</span>
           {% else %}
             <span class="inline-flex items-center justify-center w-10 h-10 text-sm font-medium text-gray-500">{{ part.title }}</span>
           {% endif %}

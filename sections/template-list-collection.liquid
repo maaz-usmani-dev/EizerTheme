@@ -1,0 +1,49 @@
+<div class="flex flex-col items-center my-8 ">
+  <h1 class="text-3xl font-medium">{{ section.settings.title }}</h1>
+  <div class="max-w-6xl mx-auto my-3">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      {% for collection in collections %}
+        {% if collection.handle != "all-products" %}
+          {% if collection.all_products_count %}
+            <div class="w-full py-6 px-3">
+              <div class="border bg-white overflow-hidden">
+                <a href="{{collection.url}}">
+                  <div class="h-80 overflow-hidden">
+                    {% if collection.featured_image != blank %}
+                      {% assign collection_img = collection.featured_image %}
+                    {% else %}
+                      {% assign collection_img = collection.products.first.featured_image %}
+                    {% endif %}
+                    <img
+                      class="w-full h-full object-cover transition duration-1000 ease-in-out transform hover:scale-105"
+                      src="{{collection_img |  image_url: width:400 }}"
+                      alt="{{collection.title | escape}}"
+                      width=""
+                      height="">
+                  </div>
+                </a>
+                <div class="p-4 bg-gray-100">
+                  <h1 class="text-xl">{{ collection.title }}</h1>
+                </div>
+              </div>
+            </div>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "List Collections",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Collections"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,11 @@
+{
+    "sections": {
+        "template":{
+            "type": "homepage",
+            "settings": {
+                "featured_collection":"mens-collection"
+            }
+        }
+    },
+    "order": ["template"]
+}

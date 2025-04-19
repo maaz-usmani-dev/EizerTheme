@@ -29,32 +29,30 @@
         </button>
       </div>
       <!-- NAVIGATION MENU -->
-      <nav class="hidden md:flex space-x-10 sticky gap-4">
+      <nav class="hidden md:flex space-x-10 sticky gap-4" x-data="{activeDropdown: null}">
         {% for link in main_value %}
           {% if link.links != blank %}
-            <div class="relative" x-data="{open:false}">
+            <div class="relative">
               <button
-                x-on:click="open=!open"
+                x-on:mouseenter="activeDropdown = '{{ link.title }}'"
                 type="button"
-                class="inline-flex font-medium items-center text-sm text-gray-800 hover:text-gray-600 uppercase ">
+                class="inline-flex font-medium items-center text-sm text-gray-800 hover:text-lime-500 uppercase ">
                 {{ link.title }}
                 {% render 'drop-down' %}
               </button>
-              <div class="w-full flex justify-center -z-10">
+              <div class="absolute left-0 top-full" @mouseleave="activeDropdown = null">
                 <div class="flex justify-center">
                   <div
-                    x-show="open"
-                    @click:away="open=false"
-                    class="border-t border-gray-100 shadow z-10 uppercase"
+                    x-show="activeDropdown === '{{ link.title }}'"
+                    class="border-t border-gray-100 shadow z-50 uppercase"
                     x-cloak>
-                    <div class="bg-white">
+                    <div class="bg-white min-w-[200px]">
                       {% for sublink in link.links %}
-                        <a class="p-4 flex items-start hover:text-white hover:bg-lime-500" href="{{ sublink.url }}">
+                        <a class="p-4 flex items-start hover:text-white hover:bg-lime-500 whitespace-nowrap" href="{{ sublink.url }}">
                           <div>
                             <p class="text-inherit text-sm">{{ sublink.title }}</p>
                           </div>
                         </a>
-
                       {% endfor %}
                     </div>
                   </div>
@@ -63,7 +61,10 @@
             </div>
           {% else %}
             <div class="relative">
-              <a href="{{link.url}}" class="text-sm font-medium uppercase text-gray-800 mx-4 hover:text-gray-600 {% if link.active %} text-lime-500 {% endif %}">
+              <a
+                href="{{link.url}}"
+                class="text-sm font-medium uppercase text-gray-800 mx-4 hover:text-lime-500 {% if link.active %} text-lime-500 {% endif %}"
+                x-on:mouseenter="activeDropdown = null">
                 {{- link.title -}}
               </a>
             </div>
@@ -74,20 +75,25 @@
       <div class="hidden md:flex items-center justify-start md:flex-1 space-x-5">
         <button
           type="button"
-          class="whitespace-nowrap text-base text-gray-800 hover:text-gray-600 mx-4"
+          class="whitespace-nowrap text-base text-gray-800 hover:text-lime-500 mx-4"
           x-on:click="searchBarOpen=true">
           {% render 'icon-search' %}
         </button>
-        <a href="{{routes.cart_url}}" class="whitespace-nowrap text-sm mx-4 text-gray-800 {% if request.path == routes.cart_url  %} text-lime-500 font-medium {% endif %}">
+        <a href="{{routes.cart_url}}" class="whitespace-nowrap text-sm mx-4 text-gray-800 hover:text-lime-500 relative {% if request.path == routes.cart_url  %} text-lime-500 font-medium {% endif %}">
+          <span class=" absolute -top-4 right-0 w-4 bg-lime-500 text-xs rounded-lg text-center text-black mb-1" id="cartCount">
+            {% if cart.item_count > 0 %}
+              {{ cart.item_count }}
+            {% endif %}
+          </span>
           {% render 'shopping-icon' %}
         </a>
         {% if shop.customer_accounts_enabled %}
           {% if customer %}
-            <a href="{{routes.account_logout_url}}" class="text-sm font-medium text-gray-800 hover:text-gray-600 mx-4 uppercase">Logout</a>
-            <a href="{{routes.account_url}}" class="text-sm font-medium text-gray-800 hover:text-gray-600 mx-4 uppercase">Account</a>
+            <a href="{{routes.account_logout_url}}" class="text-sm font-medium text-gray-800 hover:text-lime-500 mx-4 uppercase">Logout</a>
+            <a href="{{routes.account_url}}" class="text-sm font-medium text-gray-800 hover:text-lime-500 mx-4 uppercase">Account</a>
           {% else %}
-            <a href="{{routes.account_login_url}}" class="text-sm font-medium text-gray-800 hover:text-gray-600 mx-4 uppercase">Login</a>
-            <a href="{{routes.account_register_url}}" class="text-sm font-medium text-gray-800 hover:text-gray-600 mx-4 uppercase">Register</a>
+            <a href="{{routes.account_login_url}}" class="text-sm font-medium text-gray-800 hover:text-lime-500 mx-4 uppercase">Login</a>
+            <a href="{{routes.account_register_url}}" class="text-sm font-medium text-gray-800 hover:text-lime-500 mx-4 uppercase">Register</a>
           {% endif %}
         {% endif %}
       </div>
@@ -113,29 +119,31 @@
 
           <!-- NAVIGATION LINKS FOR MOBILE MENU -->
           <div class="pt-3">
-            <nav class="grid gap-y-7">
+            <nav class="grid gap-y-7" x-data="{activeDropdown: null}">
               {% for link in main_value %}
                 {% assign link_handle = link.handle | replace: '-', '_' %}
                 {% if link.links != blank %}
-                  <div x-data="{ {{link_handle}}:false }" class="relative">
+                  <div class="relative">
                     <button
-                      x-on:click="{{link_handle}}=!{{link_handle}}"
+                      x-on:click="activeDropdown === '{{ link_handle }}' ? activeDropdown = null : activeDropdown = '{{ link_handle }}'"
                       type="button"
                       class="text-base text-gray-500 hover:text-gray-900 flex items-center justify-between w-full">
                       <div>{{ link.title }}</div>
                       {% render 'drop-down' %}
                     </button>
-                    {% for sublink in link.links %}
-                      <div x-show="{{link_handle}}" class="grid gap-y-7 py-3">
+                    <div x-show="activeDropdown === '{{ link_handle }}'" class="grid gap-y-7 py-3">
+                      {% for sublink in link.links %}
                         <a href="{{sublink.url}}" class="-m-3 p-3 mt-2 flex items-center rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-50">
                           <span class="ml-3 text-base font-medium text-gray-500">{{ sublink.title }}</span>
                         </a>
-                      </div>
-                    {% endfor %}
+                      {% endfor %}
+                    </div>
                   </div>
-
                 {% else %}
-                  <a href="{{link.url}}" class="-m-3 p-3 flex items-center rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-50">
+                  <a
+                    href="{{link.url}}"
+                    class="-m-3 p-3 flex items-center rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                    x-on:click="activeDropdown = null">
                     {{ link.title }}
                   </a>
                 {% endif %}

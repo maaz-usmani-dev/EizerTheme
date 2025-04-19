@@ -1,3 +1,87 @@
-<div class="z-20">
-    <img src="{{'banner-bg.jpg'| asset_url}}" alt="" width="" height="">
+<div class="z-20 bg-[url('../assets/banner-bg.jpg')] h-screen p-12 bg-auto">
+  <div class="flex justify-center items-start gap-5 flex-col text-white mx-6 h-full">
+    <h4 class="font-medium mx-2">MEN COLLECTION</h4>
+    <div class="max-w-90 text-white">
+      <span class="text-lime-500  text-5xl font-bold mx-2">Show</span>
+      <span class=" text-5xl font-bold mx-2">Your</span>
+      <span class=" text-5xl font-bold mx-2">Personal</span>
+      <span class="text-lime-500  text-5xl font-bold mx-2">Style</span>
+    </div>
+    <p>Fowl saw dry which a above together place.</p>
+    <a href="{{collections["mens-collection"].url}}">
+      <button class="bg-lime-500 mx-2 border p-4 rounded-lg border-transparent text-white hover:bg-transparent hover:border-lime-500 hover:text-lime-500">
+        View Collection</button>
+    </a>
+  </div>
 </div>
+<div class="flex justify-center items-center gap-5 mt-7">
+  <div class="flex flex-col shadow-sm p-10 justify-center items-center gap-4">
+    <i class="fa-solid fa-sack-dollar"></i>
+    <span class="uppercase">Money back Guarantee</span>
+    <span class="font-medium text-gray-500">Shall open divide a one</span>
+  </div>
+  <div class="flex flex-col shadow-sm p-10 justify-center items-center gap-4">
+    <i class="fa-solid fa-truck"></i>
+    <span class="uppercase">Free Delivery</span>
+    <span class="font-medium text-gray-500">Shall open divide a one</span>
+  </div>
+  <div class="flex flex-col shadow-sm p-10 justify-center items-center gap-4">
+    <i class="fa-solid fa-headset"></i>
+    <span class="uppercase">Always Support</span>
+    <span class="font-medium text-gray-500">Shall open divide a one</span>
+  </div>
+  <div class="flex flex-col shadow-sm p-10 justify-center items-center gap-4">
+    <i class="fa-solid fa-shield-halved"></i>
+    <span class="uppercase">Secure Payment</span>
+    <span class="font-medium text-gray-500">Shall open divide a one</span>
+  </div>
+</div>
+<h1 class="uppercase text-center text-2xl font-medium my-16">Featured Product</h1>
+<p class="text-center text-gray-500 text-sm">Bring called seed first of third give itself now ment</p>
+<div class="w-full flex justify-center items-center gap-4 mt-16">
+  {% for product in section.settings.featured_collection.products limit: 3 %}
+    {% render 'product-card'
+      , product: product %}
+  {% endfor %}
+</div>
+<div class="bg-[url('../assets/offer-bg.png')] h-screen bg-no-repeat bg-left flex  flex-col items-end justify-center p-48 gap-6">
+  <div class="flex flex-col justify-center items-center gap-8">
+    <h3 class="uppercase text-xl text-center">All Men's Collection</h3>
+    <p class="font-bold text-7xl text-center">50% off</p>
+    <a class="bg-lime-500 text-white border border-transparent rounded-md p-4 hover:text-lime-500 hover:bg-transparent hover:border-lime-500 text-center" href="{{collections['mens-collection'].url}}">
+      Discover Now
+    </a>
+    <p class="text-gray-500">Limited Time Offer</p>
+  </div>
+</div>
+<h1 class="uppercase text-center text-2xl font-medium my-16">New Products</h1>
+<p class="text-center text-gray-500 text-sm">Bring called seed first of third give itself now ment</p>
+<div class="w-full flex justify-center items-center gap-4 mt-16">
+  {% for product in section.settings.featured_collection.products limit: 4 %}
+    {% render 'product-card'
+      , product: product %}
+  {% endfor %}
+</div>
+<h1 class="uppercase text-center text-2xl font-medium my-16">Inspired Products</h1>
+<p class="text-center text-gray-500 text-sm">Bring called seed first of third give itself now ment</p>
+<div class="w-full flex justify-center items-center">
+  <div class="w-full flex flex-wrap justify-center items-center gap-4 mt-16">
+    {% for product in collections['all-products'].products limit: 8 %}
+      {% render 'product-card'
+        , product: product %}
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Featured Collection",
+    "settings": [
+      {
+        "type": "collection",
+        "id": "featured_collection",
+        "label": "Featured Collection"
+      }
+    ]
+  }
+{% endschema %}

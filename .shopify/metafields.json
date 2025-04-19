@@ -58,6 +58,56 @@
         "name": "list.metaobject_reference",
         "category": "REFERENCE"
       }
+    },
+    {
+      "key": "sneaker-style",
+      "namespace": "shopify",
+      "name": "Sneaker style",
+      "description": "Identifies the design or type of sneakers, such as athletic or high-top",
+      "type": {
+        "name": "list.metaobject_reference",
+        "category": "REFERENCE"
+      }
+    },
+    {
+      "key": "dress-style",
+      "namespace": "shopify",
+      "name": "Dress style",
+      "description": "Identifies the design of a dress, such as wrap or empire waist",
+      "type": {
+        "name": "list.metaobject_reference",
+        "category": "REFERENCE"
+      }
+    },
+    {
+      "key": "closure-type",
+      "namespace": "shopify",
+      "name": "Closure type",
+      "description": "Defines the method used to fasten or secure a product, such as zipper or buckles",
+      "type": {
+        "name": "list.metaobject_reference",
+        "category": "REFERENCE"
+      }
+    },
+    {
+      "key": "sandal-style",
+      "namespace": "shopify",
+      "name": "Sandal style",
+      "description": "Specifies the style of sandals, such as ankle strap or lace-up",
+      "type": {
+        "name": "list.metaobject_reference",
+        "category": "REFERENCE"
+      }
+    },
+    {
+      "key": "heel-height-type",
+      "namespace": "shopify",
+      "name": "Heel height type",
+      "description": "Defines the height of a shoe's heel, such as flat or high",
+      "type": {
+        "name": "list.metaobject_reference",
+        "category": "REFERENCE"
+      }
     }
   ],
   "variant": [],
