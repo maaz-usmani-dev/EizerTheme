@@ -4,116 +4,185 @@
     const list = localStorage.getItem('wishlist');
     return list ? JSON.parse(list) : [];
   };
-  
+  const updateWishlistCount = () => {
+    const wishCountElement = document.getElementById('wishCount');
+    const wishlistItems = getList();
+    if (wishCountElement) {
+      wishCountElement.textContent = wishlistItems.length > 0 ? wishlistItems.length : '';
+    }
+  };
+
   let list = getList();
   let container = document.querySelector('#Container');
-  
+
+  const saveList = (newList) => {
+    localStorage.setItem('wishlist', JSON.stringify(newList));
+  };
+  if (!list.length) {
+    container.innerHTML = `
+    <div class="text-center p-10 text-gray-500">
+      <h2 class="text-2xl font-semibold mb-4">Your wishlist is empty</h2>
+      <p>Start adding your favorite products!</p>
+      <hr>
+    </div>
+    <a href="/" class="mt-4 p-4 bg-lime-500 text-white border border-transparent rounded-md hover:text-lime-500 hover:bg-transparent hover:border-lime-500">
+      Back to homepage
+    </a>`;
+  }
+
   const renderP = () => {
     list.forEach((handle) => {
       fetch(`/products/${handle}.js`)
         .then((response) => response.json())
         .then((product) => {
-          const variantId = product.selected_or_first_available_variant ? product.selected_or_first_available_variant.id : product.variants[0].id;
+          const variantId = product.selected_or_first_available_variant
+            ? product.selected_or_first_available_variant.id
+            : product.variants[0].id;
+
           let prodHTML = `
-              <div class="group relative max-w-xs w-full bg-white rounded shadow-sm hover:shadow-md text-gray-800 transition-all duration-300  hover:text-[#a6e06c]">
-    <!-- Product image -->
-    <div class="relative overflow-hidden">
-      ${
-        product.featured_image
-          ? `<img src="${product.featured_image}" alt="${product.title}" class="w-full h-auto object-cover">`
-          : `<div class="w-full h-64 bg-gray-200 flex items-center justify-center"><span class="text-gray-400">No image</span></div>`
-      }
-      <!-- Green strip with action buttons that appears on hover -->
-      <div class="absolute bottom-0 left-0 w-full h-12 bg-[#a6e06cbe] flex justify-center gap-3 items-center space-x-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ">
-        <!-- View button -->
-        <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform text-gray-700 hover:bg-green-400 hover:text-white">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 text-inherit"
-            fill="none"
-            viewBox="0 0 24 24"
-            z
-            stroke="currentColor">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-          </svg>
-        </button>
-    
-        <!-- Wishlist button -->
-        <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform text-gray-700 hover:bg-green-400 hover:text-white" id="wishlist" data-var="${
-          product.handle
-        }">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 text-inherit"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-          </svg>
-        </button>
-    
-        <!-- Cart button -->
-        <button
-          class="w-10 h-10 bg-white rounded-full text-gray-700 flex items-center justify-center hover:scale-110 hover:bg-green-400 hover:text-white transition-transform"
-          id="cart-btn" data-var="${variantId}">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
-    </svg>
-    
-        </button>
-    
-      </div>
-    </div>
-    
-    <!-- Product info -->
-    <div class="p-4">
-      <!-- Product title - changes to green on hover -->
-      <a href="${product.url}" class="text-base font-medium uppercase tracking-wider text-inherit">
-        ${product.title}
-      </a>
-    
-      <!-- Product price -->
-      <div class="flex items-center gap-3 mt-2">
-    <span class="text-lg font-bold text-gray-900">Rs. ${(product.price / 100).toFixed(2)}</span>
-    ${
-      product.compare_at_price > product.price
-        ? `
-      <span class="text-sm text-gray-500 line-through">Rs. ${(product.compare_at_price / 100).toFixed(2)}</span>
-    `
-        : ''
-    }
-    </div>
-    
-    </div>
-    </div>
-    
-            `;
+            <div class="product-card group relative max-w-xs w-full bg-white rounded shadow-sm hover:shadow-md text-gray-800 transition-all duration-300 hover:text-[#a6e06c]">
+              <!-- Product image -->
+              <div class="relative overflow-hidden">
+                ${
+                  product.featured_image
+                    ? `<a href="${product.url}"><img src="${product.featured_image}" alt="${product.title}" class="w-full h-auto object-cover"></a>`
+                    : `<div class="w-full h-64 bg-gray-200 flex items-center justify-center"><span class="text-gray-400">No image</span></div>`
+                }
+                <!-- Green strip with action buttons that appears on hover -->
+                <div class="absolute bottom-0 left-0 w-full h-12 bg-[#a6e06cbe] flex justify-center gap-3 items-center space-x-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                  
+                  <!-- View button -->
+                  <button class="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform text-gray-700 hover:bg-green-400 hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-inherit" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  </button>
+  
+                  <!-- Wishlist button -->
+                  <button class="wishlist-btn w-10 h-10 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform text-gray-700 hover:bg-green-400 hover:text-white" data-handle="${
+                    product.handle
+                  }">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-inherit" fill="red" viewBox="0 0 24 24" stroke="none">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                  </button>
+  
+                  <!-- Cart button -->
+                  <button class="cart-btn w-10 h-10 bg-white rounded-full text-gray-700 flex items-center justify-center hover:scale-110 hover:bg-green-400 hover:text-white transition-transform" data-var="${variantId}">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                    </svg>
+                  </button>
+  
+                </div>
+              </div>
+  
+              <!-- Product info -->
+              <div class="p-4">
+                <a href="${product.url}" class="text-base font-medium uppercase tracking-wider text-inherit">
+                  ${product.title}
+                </a>
+                <div class="flex items-center gap-3 mt-2">
+                  <span class="text-lg font-bold text-gray-900">Rs. ${(product.price / 100).toFixed(2)}</span>
+                  ${
+                    product.compare_at_price > product.price
+                      ? `<span class="text-sm text-gray-500 line-through">Rs. ${(
+                          product.compare_at_price / 100
+                        ).toFixed(2)}</span>`
+                      : ''
+                  }
+                </div>
+              </div>
+            </div>
+          `;
+
           let div = document.createElement('div');
           div.innerHTML = prodHTML;
-          container.appendChild(div.firstElementChild);
+          let productCard = div.firstElementChild;
+          container.appendChild(productCard);
+
+          const wishlistButtons = document.querySelectorAll('.wishlist-btn');
+
+          wishlistButtons.forEach((button) => {
+            button.addEventListener('click', (e) => {
+              const btn = e.currentTarget;
+              const handle = btn.getAttribute('data-handle');
+              let list = getList();
+              list = list.filter((item) => item !== handle);
+              localStorage.setItem('wishlist', JSON.stringify(list));
+              btn.closest('.group').remove();
+              updateWishlistCount();
+              if (!container.querySelector('.group')) {
+                container.innerHTML = `
+                  <div class="text-center p-10 text-gray-500">
+                    <h2 class="text-2xl font-semibold mb-4">Your wishlist is empty</h2>
+                    <p>Start adding your favorite products!</p>
+                    <hr>
+                  </div>
+                  <a href="/" class="mt-4 p-4 bg-lime-500 text-white border border-transparent rounded-md hover:text-lime-500 hover:bg-transparent hover:border-lime-500">Back to homepage</a>`;
+              }
+            });
+          });
+
+          // ✅ Attach Cart Button Click
+          productCard.querySelector('.cart-btn').addEventListener('click', async function () {
+            const btn = this;
+            const originalText = btn.innerHTML;
+            const variantId = btn.getAttribute('data-var');
+
+            btn.innerHTML = 'Adding...';
+            btn.disabled = true;
+            try {
+              const response = await fetch('/cart/add.js', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Accept: 'application/json',
+                },
+                body: JSON.stringify({
+                  id: variantId,
+                  quantity: 1,
+                }),
+              });
+              if (!response.ok) throw new Error('Network response was not ok');
+              btn.innerText = 'Added';
+              await updateCartCount();
+            } catch (err) {
+              console.error('Cart error:', err);
+              btn.innerText = 'Error';
+            } finally {
+              setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+              }, 1500);
+            }
+          });
+
+          // ✅ Update Cart Count initially
+          async function updateCartCount() {
+            try {
+              const response = await fetch('/cart.js');
+              if (!response.ok) throw new Error('Failed to fetch cart');
+              const cart = await response.json();
+              const cartCountElement = document.getElementById('cartCount');
+              if (cartCountElement) {
+                cartCountElement.innerText = cart.item_count;
+              }
+            } catch (error) {
+              console.error('Cart count update error:', error);
+            }
+          }
         });
     });
   };
-  
+
   renderP();
 </script>
 
 {% schema %}
-  {
-    "name": "Wishlist",
-    "settings": []
-  }
+{
+  "name": "Wishlist",
+  "settings": []
+}
 {% endschema %}

@@ -1,18 +1,21 @@
 <div class="group relative max-w-xs w-full bg-white rounded shadow-sm hover:shadow-md text-gray-800 transition-all duration-300  hover:text-[#a6e06c]">
   <!-- Product image -->
   <div class="relative overflow-hidden">
-    {% if product.featured_image %}
-      <img
-        src="{{ product.featured_image | img_url: '400x400', crop: 'center' }}"
-        alt="{{ product.title | escape| truncate: 15 }}"
-        class="w-full h-auto object-cover"
-        width=""
-        height="">
-    {% else %}
-      <div class="w-full h-64 bg-gray-200 flex items-center justify-center">
-        <span class="text-gray-400">No image</span>
-      </div>
-    {% endif %}
+    <a href="{{product.url}}">
+      {% if product.featured_image %}
+        <img
+          src="{{ product.featured_image | img_url: '400x400', crop: 'center' }}"
+          alt="{{ product.title | escape| truncate: 15 }}"
+          class="w-full h-auto object-cover"
+          width=""
+          height=""
+        >
+      {% else %}
+        <div class="w-full h-64 bg-gray-200 flex items-center justify-center">
+          <span class="text-gray-400">No image</span>
+        </div>
+      {% endif %}
+    </a>
     <!-- Green strip with action buttons that appears on hover -->
     <div class="absolute bottom-0 left-0 w-full h-12 bg-[#a6e06cbe] flex justify-center gap-3 items-center space-x-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ">
       <!-- View button -->
@@ -23,7 +26,8 @@
           fill="none"
           viewBox="0 0 24 24"
           z
-          stroke="currentColor">
+          stroke="currentColor"
+        >
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -41,13 +45,15 @@
       <button
         class="w-10 h-10 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform text-gray-700 hover:bg-green-400 hover:text-white"
         id="wishlist"
-        data-var="{{product.handle}}">
+        data-var="{{product.handle}}"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-5 w-5 text-inherit"
           fill="currentColor"
           viewBox="0 0 24 24"
-          stroke="currentColor">
+          stroke="currentColor"
+        >
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -60,10 +66,10 @@
       <button
         class="w-10 h-10 bg-white rounded-full text-gray-700 flex items-center justify-center hover:scale-110 hover:bg-green-400 hover:text-white transition-transform"
         data-var="{{product.selected_or_first_available_variant.id}}"
-        id="cart-btn">
+        id="cart-btn"
+      >
         {% render 'shopping-icon' %}
       </button>
-
     </div>
   </div>
 
@@ -71,14 +77,16 @@
   <div class="p-4">
     <!-- Product title - changes to green on hover -->
     <a href="{{product.url}}" class="text-base font-medium uppercase tracking-wider text-inherit">
-      {{ product.title }}
+      {{ product.title | truncate: 15 }}
     </a>
 
     <!-- Product price -->
     <div class="flex items-center gap-3 mt-2">
-      <span class="text-lg font-bold text-gray-900">{{ product.price | default: "$25.00" | money }}</span>
+      <span class="text-lg font-bold text-gray-900">{{ product.price | default: '$25.00' | money }}</span>
       {% if product.compare_at_price > product.price %}
-        <span class="text-sm text-gray-500 line-through">{{ product.compare_at_price | default: "$35.00" | money }}</span>
+        <span class="text-sm text-gray-500 line-through">
+          {{- product.compare_at_price | default: '$35.00' | money -}}
+        </span>
       {% else %}
         <!-- Fallback for the example image -->
         <span class="text-sm text-gray-500 line-through">$35.00</span>
