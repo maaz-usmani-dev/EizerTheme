@@ -1,17 +1,21 @@
 <div class="container mx-auto px-4 py-8 max-w-7xl">
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
     <!-- Product Images Section -->
-    <div class="relative">
+    <div class="relative overflow-hidden">
       <!-- Main Product Image -->
-      <div class="mb-4 border rounded-lg overflow-hidden">
-        <img
-          src="{{ product.featured_image | img_url: 'large' }}"
-          alt="{{ product.title }}"
-          class="w-full h-auto object-cover"
-          id="MainImage"
-          width=""
-          height=""
-        >
+      <div class="mb-4 border rounded-lg overflow-hidden w-[32em]">
+        <div id="MainImageWrapper" class="flex w-max transition-transform duration-500">
+          {% for image in product.images %}
+            <img
+              src="{{ image | img_url: 'large' }}"
+              alt="{{ product.title }}"
+              class="w-[32em] h-[32em] object-cover shrink-0"
+              data-index="{{ forloop.index0 }}"
+              width=""
+              height=""
+            >
+          {% endfor %}
+        </div>
       </div>
 
       <!-- Thumbnail Gallery -->
@@ -20,12 +24,13 @@
           {% for image in product.images %}
             <div
               class="w-16 h-16 border rounded-md overflow-hidden cursor-pointer hover:border-gray-400"
-              onclick="document.getElementById('MainImage').src='{{ image | img_url: 'large' }}'"
+              onclick="slideToImage({{ forloop.index0 }})"
             >
               <img
                 src="{{ image | img_url: 'small' }}"
                 alt="{{ product.title }} - Image {{ forloop.index }}"
                 class="w-full h-full object-cover"
+                data-index="{{ forloop.index0 }}"
                 width=""
                 height=""
               >
@@ -34,7 +39,6 @@
         </div>
       {% endif %}
     </div>
-
     <!-- Product Details Section -->
     <div class="flex flex-col space-y-6">
       <!-- Product Title -->
@@ -43,8 +47,12 @@
       <!-- Product Price -->
       <div class="text-3xl font-bold text-lime-500" id="price-section">
         <span class="variant-price">{{ product.selected_or_first_available_variant.price | money }}</span>
-        {% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}
-          <span class="text-base text-gray-600 line-through ml-2">{{ product.selected_or_first_available_variant.compare_at_price | money }}</span>
+        {% if product.selected_or_first_available_variant.compare_at_price
+            > product.selected_or_first_available_variant.price
+        %}
+          <span class="text-base text-gray-600 line-through ml-2">
+            {{- product.selected_or_first_available_variant.compare_at_price | money -}}
+          </span>
         {% endif %}
       </div>
 
@@ -56,7 +64,9 @@
             >:
             {% for collection in product.collections %}
               <a href="{{ collection.url }}" class="text-lime-600 hover:underline">{{ collection.title }}</a>
-              {%- unless forloop.last %}, {% endunless %}
+              {%- unless forloop.last -%}
+                ,
+              {% endunless %}
             {% endfor %}
           </span>
         </div>
@@ -83,7 +93,11 @@
       {% form 'product', product, id: 'product-form' %}
         <!-- Variant Selection if product has multiple variants -->
         {% assign variant = product.selected_or_first_available_variant %}
-        <input type="hidden" name="id" value="{{variant.id}}">        
+        <input
+          type="hidden"
+          name="id"
+          value="{{variant.id}}"
+        >
         {% if product.has_only_default_variant == false %}
           <variant-selector data-url="{{product.url}}" data-section="product-section">
             {% for option in product.options_with_values %}
@@ -110,7 +124,7 @@
               </div>
             {% endfor %}
             <script type="application/json">
-              {{product.variants| json}}
+              {{ product.variants| json }}
             </script>
           </variant-selector>
         {% endif %}
@@ -119,7 +133,11 @@
         <div class="mt-6 flex items-center">
           <label for="Quantity" class="mr-4 text-gray-700">Quantity:</label>
           <div class="flex items-center border rounded-md">
-            <button type="button" class="px-3 py-1 text-gray-600 hover:bg-gray-100" onclick="decrementQuantity()">
+            <button
+              type="button"
+              class="px-3 py-1 text-gray-600 hover:bg-gray-100"
+              onclick="decrementQuantity()"
+            >
               -
             </button>
             <input
@@ -130,7 +148,11 @@
               min="1"
               class="w-12 text-center border-0 focus:ring-0 focus:outline-none"
             >
-            <button type="button" class="px-3 py-1 text-gray-600 hover:bg-gray-100" onclick="incrementQuantity()">
+            <button
+              type="button"
+              class="px-3 py-1 text-gray-600 hover:bg-gray-100"
+              onclick="incrementQuantity()"
+            >
               +
             </button>
           </div>
@@ -153,7 +175,10 @@
               Sold Out
             {% endif %}
           </button>
-
+          <!-- Compare Button -->
+          <button type="button" class="p-3 border rounded-md hover:bg-lime-500 hover:text-white">
+            <i class="fa-regular fa-gem text-inherit"></i>
+          </button>
           <!-- Wishlist Button -->
           <button
             type="button"
@@ -175,27 +200,26 @@
                 d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
           </button>
-
-          <!-- Compare Button -->
-          <button
-            type="button"
-            class="p-3 border rounded-md hover:bg-gray-50"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6 text-gray-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-            </svg>
-          </button>
         </div>
       {% endform %}
     </div>
   </div>
 </div>
+<script>
+  const variantIdToImage = {
+    {% for variant in product.variants %}
+      {% if variant.featured_image %}
+        "{{ variant.id }}": "{{ variant.featured_image.src | img_url: 'master' }}",
+      {% endif %}
+    {% endfor %}
+  };
+
+  const productImages = [
+    {% for image in product.images %}
+      "{{ image.src | img_url: 'master' }}",
+    {% endfor %}
+  ];
+</script>
 
 <script>
   function incrementQuantity() {
@@ -210,12 +234,22 @@
     }
   }
 
+  function slideToImage(index) {
+    const wrapper = document.getElementById('MainImageWrapper');
+    const mainImageSizeEm = 32; // your main image width/height in em
+    const fontSizePx = parseFloat(getComputedStyle(document.documentElement).fontSize); // 1em in px
+    const imageWidthPx = mainImageSizeEm * fontSizePx; // final width in px
+
+    const offset = index * imageWidthPx;
+    wrapper.style.transform = `translateX(-${offset}px)`;
+  }
+
   class Variant extends HTMLElement {
     constructor() {
       super();
       this.addEventListener('change', this.onVariantChange);
     }
-    
+
     onVariantChange() {
       this.getOptions();
       this.getVariant();
@@ -225,66 +259,58 @@
         this.updateVariantInfo();
       }
     }
-    
+
     getOptions() {
       this.options = Array.from(this.querySelectorAll('select'), (select) => select.value);
     }
-    
+
     getVariantData() {
       this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent);
       return this.variantData;
     }
-    
+
     getVariant() {
       this.current = this.getVariantData().find((variant) => {
-        const finding = !variant.options
-          .map((option, index) => {
-            return this.options[index] === option;
-          })
-          .includes(false);
-        if (finding) return variant;
+        return !variant.options.map((option, index) => this.options[index] !== option).includes(true);
       });
     }
-    
+
     getURL() {
       if (!this.current) return;
       window.history.replaceState({}, '', `${this.dataset.url}?variant=${this.current.id}`);
     }
-    
+
     getID() {
       const input = document.querySelector('#product-form').querySelector('input[name="id"]');
       input.value = this.current.id;
     }
-    
+
     updateVariantInfo() {
       if (!this.current) return;
-      
-      // Update price
+
+      // ✅ Update Price with Rs. instead of PKR
       const priceElement = document.getElementById('price-section');
       if (priceElement) {
-        // Format price with currency
-        const formatter = new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'PKR', // You might want to make this dynamic based on your store's currency
-        });
-        
-        let priceHTML = `<span class="variant-price">${formatter.format(this.current.price/100)}</span>`;
-        
-        // Add compare at price if available
+        const formattedPrice = `Rs. ${(this.current.price / 100).toLocaleString()}`;
+        let priceHTML = `<span class="variant-price">${formattedPrice}</span>`;
+
         if (this.current.compare_at_price && this.current.compare_at_price > this.current.price) {
-          priceHTML += `<span class="text-base text-gray-600 line-through ml-2">${formatter.format(this.current.compare_at_price/100)}</span>`;
+          const formattedCompareAtPrice = `Rs. ${(this.current.compare_at_price / 100).toLocaleString()}`;
+          priceHTML += `<span class="text-base text-gray-600 line-through ml-2">${formattedCompareAtPrice}</span>`;
         }
-        
+
         priceElement.innerHTML = priceHTML;
       }
-      
-      // Update availability
+
+      // Update Availability
       const availabilityElement = document.getElementById('variant-availability');
       if (availabilityElement) {
-        availabilityElement.innerHTML = `: <span class="${this.current.available ? 'text-lime-600' : 'text-red-600'}">${this.current.available ? 'In Stock' : 'Out of Stock'}</span>`;
+        availabilityElement.innerHTML = `: <span class="${this.current.available ? 'text-lime-600' : 'text-red-600'}">
+          ${this.current.available ? 'In Stock' : 'Out of Stock'}
+        </span>`;
       }
-      
-      // Update add to cart button
+
+      // Update Add to Cart button
       const addToCartButton = document.getElementById('AddToCart');
       if (addToCartButton) {
         if (this.current.available) {
@@ -295,7 +321,16 @@
           addToCartButton.textContent = 'Sold Out';
         }
       }
+
+      // ✅ Slide to correct image
+      if (variantIdToImage[this.current.id]) {
+        const variantImageSrc = variantIdToImage[this.current.id];
+        const matchingIndex = productImages.findIndex((img) => img === variantImageSrc);
+        if (matchingIndex !== -1) {
+          slideToImage(matchingIndex);
+        }
+      }
     }
-  } 
+  }
   customElements.define('variant-selector', Variant);
 </script>
