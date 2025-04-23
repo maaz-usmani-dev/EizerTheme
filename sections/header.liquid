@@ -32,7 +32,7 @@
       <nav class="hidden md:flex space-x-10 sticky gap-4" x-data="{activeDropdown: null}">
         {% for link in main_value %}
           {% if link.links != blank %}
-            <div class="relative">
+            <div class="relative z-50">
               <button
                 x-on:mouseenter="activeDropdown = '{{ link.title }}'"
                 type="button"

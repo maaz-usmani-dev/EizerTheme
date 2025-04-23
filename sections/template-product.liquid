@@ -4,25 +4,27 @@
     <div class="relative">
       <!-- Main Product Image -->
       <div class="mb-4 border rounded-lg overflow-hidden">
-        <img 
-          src="{{ product.featured_image | img_url: 'large' }}" 
-          alt="{{ product.title }}" 
+        <img
+          src="{{ product.featured_image | img_url: 'large' }}"
+          alt="{{ product.title }}"
           class="w-full h-auto object-cover"
           id="MainImage"
           width=""
           height=""
         >
       </div>
-      
+
       <!-- Thumbnail Gallery -->
       {% if product.images.size > 1 %}
         <div class="flex space-x-2 overflow-x-auto pb-2">
           {% for image in product.images %}
-            <div class="w-16 h-16 border rounded-md overflow-hidden cursor-pointer hover:border-gray-400" 
-                 onclick="document.getElementById('MainImage').src='{{ image | img_url: 'large' }}'">
-              <img 
-                src="{{ image | img_url: 'small' }}" 
-                alt="{{ product.title }} - Image {{ forloop.index }}" 
+            <div
+              class="w-16 h-16 border rounded-md overflow-hidden cursor-pointer hover:border-gray-400"
+              onclick="document.getElementById('MainImage').src='{{ image | img_url: 'large' }}'"
+            >
+              <img
+                src="{{ image | img_url: 'small' }}"
+                alt="{{ product.title }} - Image {{ forloop.index }}"
                 class="w-full h-full object-cover"
                 width=""
                 height=""
@@ -37,102 +39,113 @@
     <div class="flex flex-col space-y-6">
       <!-- Product Title -->
       <h1 class="text-3xl font-bold text-gray-800">{{ product.title }}</h1>
-      
+
       <!-- Product Price -->
-      <div class="text-3xl font-bold text-green-500">
-        {{ product.price | money }}
+      <div class="text-3xl font-bold text-lime-500" id="price-section">
+        <span class="variant-price">{{ product.selected_or_first_available_variant.price | money }}</span>
+        {% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price %}
+          <span class="text-base text-gray-600 line-through ml-2">{{ product.selected_or_first_available_variant.compare_at_price | money }}</span>
+        {% endif %}
       </div>
-      
+
       <!-- Product Meta Information -->
       <div class="space-y-2 text-sm">
         <div class="flex">
           <span class="w-24 text-gray-600">Category</span>
-          <span class="text-gray-800">: 
+          <span class="text-gray-800"
+            >:
             {% for collection in product.collections %}
-              <a href="{{ collection.url }}" class="text-green-600 hover:underline">{{ collection.title }}</a>{% unless forloop.last %}, {% endunless %}
+              <a href="{{ collection.url }}" class="text-lime-600 hover:underline">{{ collection.title }}</a>
+              {%- unless forloop.last %}, {% endunless %}
             {% endfor %}
           </span>
         </div>
-        
+
         <div class="flex">
           <span class="w-24 text-gray-600">Availability</span>
-          <span class="text-gray-800">: 
+          <span class="text-gray-800" id="variant-availability">
+            :
             {% if product.available %}
-              <span class="text-green-600">In Stock</span>
+              <span class="text-lime-600">In Stock</span>
             {% else %}
               <span class="text-red-600">Out of Stock</span>
             {% endif %}
           </span>
         </div>
       </div>
-      
+
       <!-- Product Description -->
       <div class="text-gray-700 leading-relaxed">
         {{ product.description }}
       </div>
-      
+
       <!-- Product Form -->
-      {% form 'product', product %}
+      {% form 'product', product, id: 'product-form' %}
         <!-- Variant Selection if product has multiple variants -->
+        {% assign variant = product.selected_or_first_available_variant %}
+        <input type="hidden" name="id" value="{{variant.id}}">        
         {% if product.has_only_default_variant == false %}
-          {% for option in product.options_with_values %}
-            <div class="mt-4">
-              <label for="Option{{ option.position }}" class="block text-sm font-medium text-gray-700">{{ option.name }}</label>
-              <select 
-                id="Option{{ option.position }}" 
-                name="options[{{ option.name }}]" 
-                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md"
-              >
-                {% for value in option.values %}
-                  <option 
-                    value="{{ value }}" 
-                    {% if option.selected_value == value %}selected="selected"{% endif %}
-                  >
-                    {{ value }}
-                  </option>
-                {% endfor %}
-              </select>
-            </div>
-          {% endfor %}
+          <variant-selector data-url="{{product.url}}" data-section="product-section">
+            {% for option in product.options_with_values %}
+              <div class="mt-4">
+                <label for="Option-{{forloop.index0}}" class="block text-sm font-medium text-gray-700">
+                  {{- option.name -}}
+                </label>
+                <select
+                  id="Option-{{forloop.index0}}"
+                  name="options[{{ option.name }}]"
+                  class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-lime-500 focus:border-lime-500 sm:text-sm rounded-md"
+                >
+                  {% for value in option.values %}
+                    <option
+                      value="{{ value }}"
+                      {% if option.selected_value == value %}
+                        selected="selected"
+                      {% endif %}
+                    >
+                      {{ value }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+            {% endfor %}
+            <script type="application/json">
+              {{product.variants| json}}
+            </script>
+          </variant-selector>
         {% endif %}
-        
-        <!-- Hidden input for variant ID -->
-        <select name="id" id="ProductSelect" class="hidden">
-          {% for variant in product.variants %}
-            <option 
-              value="{{ variant.id }}" 
-              {% if variant == product.selected_or_first_available_variant %}selected="selected"{% endif %}
-              {% unless variant.available %}disabled="disabled"{% endunless %}
-            >
-              {{ variant.title }} - {{ variant.price | money }}
-            </option>
-          {% endfor %}
-        </select>
-        
+
         <!-- Quantity Selector -->
         <div class="mt-6 flex items-center">
           <label for="Quantity" class="mr-4 text-gray-700">Quantity:</label>
           <div class="flex items-center border rounded-md">
-            <button type="button" class="px-3 py-1 text-gray-600 hover:bg-gray-100" onclick="decrementQuantity()">-</button>
-            <input 
-              type="number" 
-              id="Quantity" 
-              name="quantity" 
-              value="1" 
-              min="1" 
-              class="w-12 text-center border-0 focus:ring-0 focus:outline-none" 
+            <button type="button" class="px-3 py-1 text-gray-600 hover:bg-gray-100" onclick="decrementQuantity()">
+              -
+            </button>
+            <input
+              type="number"
+              id="Quantity"
+              name="quantity"
+              value="1"
+              min="1"
+              class="w-12 text-center border-0 focus:ring-0 focus:outline-none"
             >
-            <button type="button" class="px-3 py-1 text-gray-600 hover:bg-gray-100" onclick="incrementQuantity()">+</button>
+            <button type="button" class="px-3 py-1 text-gray-600 hover:bg-gray-100" onclick="incrementQuantity()">
+              +
+            </button>
           </div>
         </div>
-        
+
         <!-- Add to Cart Button and Action Buttons -->
         <div class="mt-6 flex space-x-2">
-          <button 
-            type="submit" 
-            name="add" 
-            class="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-md uppercase tracking-wide"
-            {% unless product.available %}disabled{% endunless %}
+          <button
+            type="submit"
+            name="add"
+            id="AddToCart"
+            class="flex-1 bg-lime-500 border border-transparent hover:bg-transparent hover:text-lime-500 hover:border-lime-500 text-white font-medium py-3 px-6 rounded-md uppercase tracking-wide"
+            {% unless product.available %}
+              disabled
+            {% endunless %}
           >
             {% if product.available %}
               Add to Cart
@@ -140,24 +153,41 @@
               Sold Out
             {% endif %}
           </button>
-          
+
           <!-- Wishlist Button -->
-          <button 
-            type="button" 
-            class="p-3 border rounded-md hover:bg-gray-50"
+          <button
+            type="button"
+            class="p-3 border border-black rounded-md hover:bg-lime-500 text-gray-700 hover:text-white"
             id="wishlist"
-            data-var="{{product.selected_or_first_available_variant.id}}"
+            data-var="{{product.handle}}"
           >
-          
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 text-inherit"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
           </button>
-          
+
           <!-- Compare Button -->
-          <button 
-            type="button" 
+          <button
+            type="button"
             class="p-3 border rounded-md hover:bg-gray-50"
-            onclick="addToCompare({{ product.id }})"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-6 w-6 text-gray-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
           </button>
@@ -172,15 +202,100 @@
     const input = document.getElementById('Quantity');
     input.value = parseInt(input.value) + 1;
   }
-  
+
   function decrementQuantity() {
     const input = document.getElementById('Quantity');
     if (parseInt(input.value) > 1) {
       input.value = parseInt(input.value) - 1;
     }
-  }  
-  function addToCompare(productId) {
-    // Implement compare functionality
-    console.log('Added product to compare:', productId);
   }
+
+  class Variant extends HTMLElement {
+    constructor() {
+      super();
+      this.addEventListener('change', this.onVariantChange);
+    }
+    
+    onVariantChange() {
+      this.getOptions();
+      this.getVariant();
+      if (this.current) {
+        this.getURL();
+        this.getID();
+        this.updateVariantInfo();
+      }
+    }
+    
+    getOptions() {
+      this.options = Array.from(this.querySelectorAll('select'), (select) => select.value);
+    }
+    
+    getVariantData() {
+      this.variantData = this.variantData || JSON.parse(this.querySelector('[type="application/json"]').textContent);
+      return this.variantData;
+    }
+    
+    getVariant() {
+      this.current = this.getVariantData().find((variant) => {
+        const finding = !variant.options
+          .map((option, index) => {
+            return this.options[index] === option;
+          })
+          .includes(false);
+        if (finding) return variant;
+      });
+    }
+    
+    getURL() {
+      if (!this.current) return;
+      window.history.replaceState({}, '', `${this.dataset.url}?variant=${this.current.id}`);
+    }
+    
+    getID() {
+      const input = document.querySelector('#product-form').querySelector('input[name="id"]');
+      input.value = this.current.id;
+    }
+    
+    updateVariantInfo() {
+      if (!this.current) return;
+      
+      // Update price
+      const priceElement = document.getElementById('price-section');
+      if (priceElement) {
+        // Format price with currency
+        const formatter = new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'PKR', // You might want to make this dynamic based on your store's currency
+        });
+        
+        let priceHTML = `<span class="variant-price">${formatter.format(this.current.price/100)}</span>`;
+        
+        // Add compare at price if available
+        if (this.current.compare_at_price && this.current.compare_at_price > this.current.price) {
+          priceHTML += `<span class="text-base text-gray-600 line-through ml-2">${formatter.format(this.current.compare_at_price/100)}</span>`;
+        }
+        
+        priceElement.innerHTML = priceHTML;
+      }
+      
+      // Update availability
+      const availabilityElement = document.getElementById('variant-availability');
+      if (availabilityElement) {
+        availabilityElement.innerHTML = `: <span class="${this.current.available ? 'text-lime-600' : 'text-red-600'}">${this.current.available ? 'In Stock' : 'Out of Stock'}</span>`;
+      }
+      
+      // Update add to cart button
+      const addToCartButton = document.getElementById('AddToCart');
+      if (addToCartButton) {
+        if (this.current.available) {
+          addToCartButton.disabled = false;
+          addToCartButton.textContent = 'Add to Cart';
+        } else {
+          addToCartButton.disabled = true;
+          addToCartButton.textContent = 'Sold Out';
+        }
+      }
+    }
+  } 
+  customElements.define('variant-selector', Variant);
 </script>
