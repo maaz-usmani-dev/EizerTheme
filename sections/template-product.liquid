@@ -3,7 +3,7 @@
     <!-- Product Images Section -->
     <div class="relative overflow-hidden">
       <!-- Main Product Image -->
-      <div class="mb-4 border rounded-lg overflow-hidden w-[32em]">
+      <div class="mb-4 overflow-hidden w-[32em]">
         <div id="MainImageWrapper" class="flex w-max transition-transform duration-500">
           {% for image in product.images %}
             <img
@@ -20,10 +20,10 @@
 
       <!-- Thumbnail Gallery -->
       {% if product.images.size > 1 %}
-        <div class="flex space-x-2 overflow-x-auto pb-2">
+        <div class="flex space-x-2 overflow-x-auto pb-2 absolute bottom-6 right-32">
           {% for image in product.images %}
             <div
-              class="w-16 h-16 border rounded-md overflow-hidden cursor-pointer hover:border-gray-400"
+              class="w-16 h-16 overflow-hidden cursor-pointer"
               onclick="slideToImage({{ forloop.index0 }})"
             >
               <img
@@ -76,7 +76,7 @@
           <span class="text-gray-800" id="variant-availability">
             :
             {% if product.available %}
-              <span class="text-lime-600">In Stock</span>
+              <span class="text-lime-500">In Stock</span>
             {% else %}
               <span class="text-red-600">Out of Stock</span>
             {% endif %}
@@ -86,7 +86,7 @@
 
       <!-- Product Description -->
       <div class="text-gray-700 leading-relaxed">
-        {{ product.description }}
+        {{ product.description | truncatewords: 35 }}
       </div>
 
       <!-- Product Form -->
@@ -205,6 +205,10 @@
     </div>
   </div>
 </div>
+{% for item in product.metafields.custom %}
+  {{ item[forloop.index0] }}:{{ item[forloop.index].value }}
+  <br>
+{% endfor %}
 <script>
   const variantIdToImage = {
     {% for variant in product.variants %}
