@@ -205,10 +205,6 @@
     </div>
   </div>
 </div>
-{% for item in product.metafields.custom %}
-  {{ item[forloop.index0] }}:{{ item[forloop.index].value }}
-  <br>
-{% endfor %}
 <script>
   const variantIdToImage = {
     {% for variant in product.variants %}

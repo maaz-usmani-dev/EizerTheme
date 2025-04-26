@@ -1,0 +1,264 @@
+<div class="perspective-card-container perspective-[1000px] max-w-md mx-auto">
+  <div
+    class="blog-card group relative w-full rounded-xl overflow-hidden transition-all duration-700 hover:shadow-[0_20px_50px_rgba(132,204,22,0.7)] shadow-lg bg-gradient-to-br from-white via-white to-gray-100 hover:bg-gradient-to-br hover:from-white hover:via-green-50 hover:to-lime-50 transform hover:scale-[1.02] hover:[transform:rotateY(5deg)]"
+    onmousemove="handleMouseMove(event)"
+    onmouseleave="handleMouseLeave(event)"
+  >
+    <!-- Animated background patterns -->
+    <div class="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-1000 pointer-events-none z-0 overflow-hidden">
+      <div
+        class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(101,163,13,0.1)_1px,transparent_1px)] bg-[length:20px_20px] animate-[pulse_4s_ease-in-out_infinite]"
+      ></div>
+    </div>
+
+    <!-- Animated border gradient -->
+    <div class="absolute inset-0 p-[2px] rounded-xl z-0 bg-gradient-to-r from-transparent via-transparent to-transparent group-hover:from-lime-500 group-hover:via-green-500 group-hover:to-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 [animation:gradient_10s_ease_infinite] overflow-hidden">
+      <div class="absolute inset-0 bg-white rounded-[10px]"></div>
+    </div>
+
+    <!-- Shine effect -->
+    <div class="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none z-10 transition-opacity duration-1000 overflow-hidden">
+      <div
+        class="absolute inset-0 -translate-x-full group-hover:translate-x-full transform transition-transform duration-1500 bg-gradient-to-r from-transparent via-white/30 to-transparent [animation-delay:0.5s]"
+      ></div>
+    </div>
+
+    <!-- Floating particles effect -->
+    <div class="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none z-5 overflow-hidden transition-opacity duration-500">
+      <div
+        class="particle absolute h-1 w-1 rounded-full bg-lime-500 top-[10%] left-[10%] [animation:float_3s_ease-in-out_infinite]"
+      ></div>
+      <div
+        class="particle absolute h-2 w-2 rounded-full bg-green-500 top-[20%] left-[20%] [animation:float_4s_ease-in-out_0.5s_infinite]"
+      ></div>
+      <div
+        class="particle absolute h-1 w-1 rounded-full bg-emerald-500 top-[15%] left-[85%] [animation:float_3.5s_ease-in-out_1s_infinite]"
+      ></div>
+      <div
+        class="particle absolute h-2 w-2 rounded-full bg-lime-500 top-[75%] left-[15%] [animation:float_4.5s_ease-in-out_0.7s_infinite]"
+      ></div>
+      <div
+        class="particle absolute h-1 w-1 rounded-full bg-green-500 top-[80%] left-[80%] [animation:float_3.7s_ease-in-out_1.2s_infinite]"
+      ></div>
+    </div>
+
+    <div class="relative z-10">
+      <!-- Image container with advanced effects -->
+      <div class="relative overflow-hidden">
+        <div class="overflow-hidden h-64">
+          <img
+            class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 transform"
+            src="{{ article.image | img_url: 'large' }}"
+            alt="{{ article.title }}"
+            id="card-image"
+            width=""
+            height=""
+          >
+
+          <!-- Gradient overlays -->
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-40 group-hover:opacity-60 transition-opacity duration-500"
+          ></div>
+          <div
+            class="absolute inset-0 bg-gradient-to-br from-lime-500/0 via-green-500/0 to-emerald-500/0 group-hover:from-lime-500/20 group-hover:via-green-500/20 group-hover:to-emerald-500/20 opacity-0 group-hover:opacity-100 transition-all duration-700 mix-blend-overlay"
+          ></div>
+
+          <!-- Animated light beam -->
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 overflow-hidden pointer-events-none">
+            <div
+              class="absolute top-0 left-[50%] h-[200%] w-[60px] bg-white/20 -rotate-45 translate-x-[-50%] -translate-y-[25%] group-hover:translate-y-[100%] transition-transform duration-[1.7s] blur-[5px]"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Animated date box -->
+        <div class="absolute bottom-0 left-0 bg-gradient-to-br from-lime-500 to-green-600 text-white text-center p-2 w-20 transition-all duration-500 group-hover:scale-110 group-hover:-rotate-3 transform origin-bottom-left shadow-lg group-hover:shadow-lime-500/50 rounded-tr-lg">
+          <div class="relative overflow-hidden">
+            <span class="block text-3xl font-bold relative z-10">{{ article.published_at | date: '%d' }}</span>
+            <span class="block relative z-10">{{ article.published_at | date: '%b' }}</span>
+            <div
+              class="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content with advanced animations -->
+      <div class="p-6 relative">
+        <!-- Animated title -->
+        <h2 class="text-2xl font-bold text-gray-800 mb-3 transition-all duration-500 group-hover:translate-y-[-3px] transform relative inline-block">
+          <a href="{{ article.url }}" class="relative inline-block overflow-hidden">
+            <span class="relative z-10 bg-gradient-to-r from-gray-800 to-gray-800 group-hover:from-lime-600 group-hover:via-green-600 group-hover:to-emerald-600 bg-clip-text group-hover:text-transparent transition-all duration-500">
+              {{- article.title -}}
+            </span>
+            <!-- Animated underline -->
+            <span
+              class="absolute bottom-0 left-0 w-0 h-0.5 bg-gradient-to-r from-lime-500 via-green-500 to-emerald-500 group-hover:w-full transition-all duration-700 delay-100"
+            ></span>
+          </a>
+        </h2>
+
+        <!-- Featured 15 words with special styling -->
+        <div class="mb-4 relative overflow-hidden rounded-lg bg-gradient-to-r from-lime-50 to-green-50 p-3 border-l-4 border-lime-500 transform transition-all duration-500 group-hover:translate-y-[-2px] group-hover:shadow-md">
+          <p class="text-gray-700 font-medium relative z-10">
+            <span class="text-lime-600">"</span>
+            {{ article.content | strip_html | truncatewords: 15 | strip }}
+            <span class="text-lime-600">"</span>
+          </p>
+          <!-- Animated gradient background -->
+          <div
+            class="absolute inset-0 bg-gradient-to-r from-lime-100/0 via-green-100/0 to-emerald-100/0 group-hover:from-lime-100 group-hover:via-green-100/50 group-hover:to-emerald-100/30 opacity-0 group-hover:opacity-100 transition-opacity duration-700"
+          ></div>
+          <!-- Animated corner accent -->
+          <div
+            class="absolute top-0 right-0 w-0 h-0 border-t-[20px] border-r-[20px] border-t-transparent border-r-lime-200/0 group-hover:border-r-lime-200 transition-all duration-700"
+          ></div>
+        </div>
+
+        <!-- Animated excerpt -->
+        <p class="text-gray-600 mb-4 transition-all duration-500 group-hover:translate-y-[-2px] transform relative">
+          {{ article.excerpt | strip_html | truncatewords: 25 }}
+          <span
+            class="absolute left-0 bottom-0 w-full h-0 group-hover:h-full transition-all duration-1000 bg-gradient-to-t from-white/50 to-transparent opacity-0 group-hover:opacity-100 pointer-events-none"
+          ></span>
+        </p>
+
+        <!-- Animated read more button -->
+        <a
+          href="{{ article.url }}"
+          class="relative inline-block px-4 py-2 rounded-full bg-gradient-to-r from-lime-500 to-green-600 text-white font-medium mb-4 overflow-hidden group-hover:shadow-lg group-hover:shadow-lime-500/30 transition-all duration-500 group-hover:translate-y-[-2px] transform"
+        >
+          <span class="relative z-10 flex items-center">
+            Read more
+            <span class="ml-1 transition-transform duration-500 group-hover:translate-x-1 inline-block">→</span>
+          </span>
+          <span
+            class="absolute inset-0 bg-gradient-to-r from-emerald-500 to-green-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+          ></span>
+          <!-- Button glow effect -->
+          <span
+            class="absolute inset-0 -translate-x-full group-hover:translate-x-full transform transition-transform duration-1000 bg-white/20 skew-x-[-20deg]"
+          ></span>
+        </a>
+
+        <!-- Metadata with staggered animations -->
+        <div class="flex items-center text-gray-500 text-sm mt-2">
+          <span class="mr-4 flex items-center transition-all duration-500 group-hover:translate-y-[-3px] transform hover:scale-110">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-lime-100 group-hover:bg-lime-200 transition-colors duration-500 mr-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-3 w-3 text-lime-500 transition-transform duration-500 group-hover:rotate-12"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </span>
+            {% if article.tags.size > 0 %}
+              {% for tag in article.tags limit: 2 %}
+                <span class="transition-colors duration-300 hover:text-lime-600">{{ tag }}</span>
+                {%- unless forloop.last %}, {% endunless %}
+              {% endfor %}
+            {% endif %}
+          </span>
+
+          <span class="flex items-center transition-all duration-700 delay-100 group-hover:translate-y-[-3px] transform hover:scale-110">
+            <span class="flex items-center justify-center w-6 h-6 rounded-full bg-green-100 group-hover:bg-green-200 transition-colors duration-500 mr-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-3 w-3 text-green-500 transition-transform duration-500 group-hover:rotate-12"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+              </svg>
+            </span>
+            {% if article.comments_count > 0 %}
+              {{ article.comments_count }} Comments
+            {% else %}
+              0 Comments
+            {% endif %}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(0) translateX(0);
+    }
+    50% {
+      transform: translateY(-10px) translateX(5px);
+    }
+    100% {
+      transform: translateY(0) translateX(0);
+    }
+  }
+
+  .perspective-card-container {
+    perspective: 1000px;
+  }
+
+  [class*='bg-gradient'] {
+    background-size: 200% 200%;
+    animation: gradient 15s ease infinite;
+  }
+</style>
+
+<script>
+  function handleMouseMove(e) {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // Calculate rotation based on mouse position
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateY = ((x - centerX) / centerX) * 5; // Max 5 degrees
+    const rotateX = ((centerY - y) / centerY) * 5; // Max 5 degrees
+
+    // Apply the rotation
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+
+    // Move image slightly for parallax effect
+    const image = card.querySelector('#card-image');
+    if (image) {
+      const moveX = ((x - centerX) / centerX) * 10; // Max 10px
+      const moveY = ((y - centerY) / centerY) * 10; // Max 10px
+      image.style.transform = `translateX(${moveX}px) translateY(${moveY}px) scale(1.1)`;
+    }
+
+    // Create spotlight effect
+    const spotlightSize = 100;
+    card.style.backgroundImage = `radial-gradient(circle ${spotlightSize}px at ${x}px ${y}px, rgba(132,204,22,0.15), transparent)`;
+  }
+
+  function handleMouseLeave(e) {
+    const card = e.currentTarget;
+    card.style.transform = '';
+    card.style.backgroundImage = '';
+
+    const image = card.querySelector('#card-image');
+    if (image) {
+      image.style.transform = '';
+    }
+  }
+</script>

@@ -1,0 +1,91 @@
+<article
+  class="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full transform hover:-translate-y-2 opacity-0 animate-[fadeIn_0.5s_ease_forwards]"
+  style="animation-delay: {{ forloop.index | times: 0.1 }}s;"
+>
+  <a href="{{ article.url }}" class="block h-full no-underline group overflow-hidden">
+    <div class="relative overflow-hidden pb-[60%]">
+      {% if article.image %}
+        <img
+          src="{{ article.image | image_url: width:'600', crop: 'center' }}"
+          alt="{{ article.title | escape }}"
+          class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          loading="lazy"
+          width=""
+          height=""
+        >
+      {% else %}
+        <div
+          class="absolute inset-0 bg-gradient-to-br from-lime-100 to-green-100 flex items-center justify-center"
+        >
+          <span class="text-4xl font-bold text-lime-300">{{ article.title | slice: 0, 1 }}</span>
+        </div>
+      {% endif %}
+      <div class="absolute top-4 right-4">
+        <span class="bg-white/90 backdrop-blur-sm text-xs font-medium px-2 py-1 rounded-full text-gray-700">
+          {{ article.published_at | date: '%b %d, %Y' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="p-6 flex-grow flex flex-col">
+      <h2
+        class="text-xl font-semibold text-gray-900 mb-3 line-clamp-2 group-hover:text-lime-500 transition-colors duration-300"
+      >
+        {{ article.title }}
+      </h2>
+
+      <p class="text-gray-600 mb-4 line-clamp-3 flex-grow">
+        {{ article.excerpt | default: article.content | strip_html | truncatewords: 30 }}
+      </p>
+
+      <div class="flex items-center justify-between mt-auto">
+        {% if article.author %}
+          <span class="text-sm text-gray-500">By {{ article.author }}</span>
+        {% else %}
+          <span></span>
+        {% endif %}
+        <span
+          class="inline-flex items-center text-lime-500 font-medium text-sm group-hover:translate-x-1 transition-transform duration-300"
+        >
+          Read more
+          <svg
+            class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform duration-300"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3">
+            </path>
+          </svg>
+        </span>
+      </div>
+    </div>
+  </a>
+</article>
+<style>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

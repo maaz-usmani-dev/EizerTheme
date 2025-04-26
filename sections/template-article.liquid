@@ -1,62 +1,49 @@
-<article itemscope itemtype="http://schema.org/BlogPosting">
-  {% for block in section.blocks %}
-    {% case block.type %}
-      {% when 'article_title' %}
-        <div class="flex justify-center items-center">
-          <div class="max-w-7xl text-center">
-            <a href="{{blog.url}}" class="text-base uppercase text-gray-500 hover:text-gray-800 font-bold">
-              {{- blog.title -}}
-            </a>
-            <h1 class="text-4xl md:text-6xl font-medium" itemprop="headline">{{ article.title }}</h1>
-          </div>
-        </div>
-      {% when 'article_author' %}
-        <div class="flex justify-center items-center">
-          <div
-            class="max-w-7xl text-center"
-            itemscope
-            itemtype="http://schema.org/Person"
-          >
-            {% if section.settings.Author %}
-              <small itemprop="author">{{ article.author }}</small>
-            {% endif %}
-          </div>
-        </div>
-      {% when 'article_date' %}
-        {% if section.settings.Date %}
-          <div class="flex justify-center items-center">
-            <div class="max-w-7xl text-center">
-              <time itemprop="datePublished" datetime="{{article.published_at | date:format: 'on_date'}}">
-                {{ article.published_at | date: '%Y-%m-%d' }}
-              </time>
-            </div>
-          </div>
-        {% endif %}
-      {% when 'article_thumbnail' %}
-        <div itemprop="image" class="max-w-7xl bg-blue-300 rounded-lg mx-2 md:mx-auto overflow-hidden p-2 my-3">
-          {% if article.image != blank %}
-            <img
-              src="{{article.image | image_url: width: 500 }}"
-              alt="{{article.image.alt}}"
-              height=""
-              width=""
-              class="w-full h-80 md:h-96 object-cover object-center"
-            >
-          {% else %}
-            {% assign placeholder = 'lifestyle-2' %}
-            {{ placeholder | placeholder_svg_tag: 'w-full h-80 md:h-96 object-cover object-center' }}
-          {% endif %}
-        </div>
-      {% when 'article_content' %}
-        <div class="flex justify-center items-center">
-          <div class="max-w-7xl text-center" itemprop="articleBody">
-            {{ article.content }}
-          </div>
-        </div>
-      {% else %}
-
-    {% endcase %}
-  {% endfor %}
+<article>
+  <div class="flex justify-center items-center">
+    <div class="max-w-7xl text-center">
+      <a href="{{blog.url}}" class="text-base uppercase text-gray-500 hover:text-gray-800 font-bold">
+        {{- blog.title -}}
+      </a>
+      <h1 class="text-4xl md:text-6xl font-medium">{{ article.title }}</h1>
+    </div>
+  </div>
+  <div class="flex justify-center items-center">
+    <div
+      class="max-w-7xl text-center"
+    >
+      {% if section.settings.Author %}
+        <small>{{ article.author }}</small>
+      {% endif %}
+    </div>
+  </div>
+  {% if section.settings.Date %}
+    <div class="flex justify-center items-center">
+      <div class="max-w-7xl text-center">
+        <time datetime="{{article.published_at | date:format: 'on_date'}}">
+          {{ article.published_at | date: '%Y-%m-%d' }}
+        </time>
+      </div>
+    </div>
+  {% endif %}
+  <div class="max-w-7xl bg-blue-300 rounded-lg mx-2 md:mx-auto overflow-hidden p-2 my-3">
+    {% if article.image != blank %}
+      <img
+        src="{{article.image | image_url: width: 500 }}"
+        alt="{{article.image.alt}}"
+        height=""
+        width=""
+        class="w-full h-80 md:h-96 object-cover object-center"
+      >
+    {% else %}
+      {% assign placeholder = 'lifestyle-2' %}
+      {{ placeholder | placeholder_svg_tag: 'w-full h-80 md:h-96 object-cover object-center' }}
+    {% endif %}
+  </div>
+  <div class="flex justify-center items-center">
+    <div class="max-w-7xl text-center">
+      {{ article.content }}
+    </div>
+  </div>
 </article>
 
 {% if blog.comments_enabled? %}

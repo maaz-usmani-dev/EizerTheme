@@ -63,7 +63,7 @@
                   <button class="wishlist-btn w-10 h-10 bg-white rounded-full flex items-center justify-center hover:scale-110 transition-transform text-gray-700 hover:bg-green-400 hover:text-white" data-handle="${
                     product.handle
                   }">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-inherit" fill="red" viewBox="0 0 24 24" stroke="none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-inherit" fill="red" viewBox="0 0 24 24" stroke="red">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                     </svg>
                   </button>
@@ -81,7 +81,7 @@
               <!-- Product info -->
               <div class="p-4">
                 <a href="${product.url}" class="text-base font-medium uppercase tracking-wider text-inherit">
-                  ${product.title}
+                  ${product.title.length > 12 ? product.title.substring(0, 12) + '...' : product.title}
                 </a>
                 <div class="flex items-center gap-3 mt-2">
                   <span class="text-lg font-bold text-gray-900">Rs. ${(product.price / 100).toFixed(2)}</span>

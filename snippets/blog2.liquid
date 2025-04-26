@@ -1,0 +1,45 @@
+<div class="max-w-md mx-auto overflow-hidden bg-white rounded-lg shadow-md">
+  <div class="relative">
+    <img
+      class="w-full h-64 object-cover"
+      src="{{ article.image | img_url: 'large' }}"
+      alt="{{ article.title }}"
+      width=""
+      height=""
+    >
+    <div class="absolute bottom-0 left-0 bg-lime-500 text-white text-center p-2 w-20">
+      <span class="block text-3xl font-bold">{{ article.published_at | date: '%d' }}</span>
+      <span class="block">{{ article.published_at | date: '%b' }}</span>
+    </div>
+  </div>
+
+  <div class="p-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-3">{{ article.title }}</h2>
+
+    <p class="text-gray-600 mb-4">
+      {{ article.excerpt | strip_html | truncatewords: 25 }}
+    </p>
+
+    <div class="flex items-center text-gray-500 text-sm">
+      <span class="mr-4">
+        <i class="fas fa-user mr-1"></i>
+        {% if article.tags.size > 0 %}
+          {% for tag in article.tags limit: 2 %}
+            {{ tag -}}
+            {%- unless forloop.last %}, {% endunless %}
+          {% endfor %}
+        {% endif %}
+      </span>
+
+      <span>
+        <i class="fas fa-comment mr-1"></i>
+        {% if article.comments_count > 0 %}
+          {{ article.comments_count }} Comments
+        {% else %}
+          0 Comments
+        {% endif %}
+      </span>
+    </div>
+    <p>{{article.content| truncatewords: 10}}</p>
+  </div>
+</div>

@@ -10,7 +10,8 @@
     <p>Fowl saw dry which a above together place.</p>
     <a href="{{collections["mens-collection"].url}}">
       <button class="bg-lime-500 mx-2 border p-4 rounded-lg border-transparent text-white hover:bg-transparent hover:border-lime-500 hover:text-lime-500">
-        View Collection</button>
+        View Collection
+      </button>
     </a>
   </div>
 </div>
@@ -40,15 +41,17 @@
 <p class="text-center text-gray-500 text-sm">Bring called seed first of third give itself now ment</p>
 <div class="w-full flex justify-center items-center gap-4 mt-16">
   {% for product in section.settings.featured_collection.products limit: 3 %}
-    {% render 'product-card'
-      , product: product %}
+    {% render 'product-card', product: product %}
   {% endfor %}
 </div>
 <div class="bg-[url('../assets/offer-bg.png')] h-screen bg-no-repeat bg-left flex  flex-col items-end justify-center p-48 gap-6">
   <div class="flex flex-col justify-center items-center gap-8">
     <h3 class="uppercase text-xl text-center">All Men's Collection</h3>
     <p class="font-bold text-7xl text-center">50% off</p>
-    <a class="bg-lime-500 text-white border border-transparent rounded-md p-4 hover:text-lime-500 hover:bg-transparent hover:border-lime-500 text-center" href="{{collections['mens-collection'].url}}">
+    <a
+      class="bg-lime-500 text-white border border-transparent rounded-md p-4 hover:text-lime-500 hover:bg-transparent hover:border-lime-500 text-center"
+      href="{{collections['mens-collection'].url}}"
+    >
       Discover Now
     </a>
     <p class="text-gray-500">Limited Time Offer</p>
@@ -58,8 +61,7 @@
 <p class="text-center text-gray-500 text-sm">Bring called seed first of third give itself now ment</p>
 <div class="w-full flex justify-center items-center gap-4 mt-16">
   {% for product in section.settings.featured_collection.products limit: 4 %}
-    {% render 'product-card'
-      , product: product %}
+    {% render 'product-card', product: product %}
   {% endfor %}
 </div>
 <h1 class="uppercase text-center text-2xl font-medium my-16">Inspired Products</h1>
@@ -67,21 +69,26 @@
 <div class="w-full flex justify-center items-center">
   <div class="w-full flex flex-wrap justify-center items-center gap-4 mt-16">
     {% for product in collections['all-products'].products limit: 8 %}
-      {% render 'product-card'
-        , product: product %}
+      {% render 'product-card', product: product %}
     {% endfor %}
   </div>
 </div>
-
+<h1 class="uppercase text-center text-2xl font-medium my-16">latest blog</h1>
+<p class="text-center text-gray-500 text-sm">Bring called seed first of third give itself now ment</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6 px-4">
+  {% for article in blogs["news"].articles limit: 3 %}
+    {% render 'blog-card', article: article %}
+  {% endfor %}
+</div>
 {% schema %}
-  {
-    "name": "Featured Collection",
-    "settings": [
-      {
-        "type": "collection",
-        "id": "featured_collection",
-        "label": "Featured Collection"
-      }
-    ]
-  }
+{
+  "name": "Featured Collection",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "featured_collection",
+      "label": "Featured Collection"
+    }
+  ]
+}
 {% endschema %}
