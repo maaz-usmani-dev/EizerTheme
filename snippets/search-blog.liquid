@@ -1,0 +1,36 @@
+<div class="p-6 bg-[#fafafa] rounded-lg">
+  <!-- Search Box -->
+  <form action="/search" method="get" class="mb-6">
+    <input type="hidden" name="type" value="article">
+    <div class="flex">
+      <input
+        type="text"
+        name="q"
+        placeholder="Search Keyword"
+        class="w-full px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none"
+      >
+      <button type="submit" class="bg-lime-500 px-4 rounded-r-md text-white hover:bg-lime-600">
+        Search
+      </button>
+    </div>
+  </form>
+
+  <!-- Blog Categories with Counts -->
+  <div class="bg-[#f9f9f9] p-4 rounded-md">
+    <h3 class="text-xl font-semibold mb-4">Category</h3>
+    <ul class="space-y-3">
+      {% assign tags = blog.all_tags %}
+      {% for tag in tags %}
+        {% assign articles_with_tag = blog.articles | where: "tags", tag %}
+        <li class="flex justify-between items-center text-gray-600 hover:text-lime-500">
+          <a href="{{ blog.url }}/tagged/{{ tag | handle }}">
+            {{ tag }}
+          </a>
+          <span class="text-sm text-gray-400">
+            ({{ articles_with_tag.size }})
+          </span>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>

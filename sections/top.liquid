@@ -1,13 +1,18 @@
 <div class="bg-[#f6f6f6] h-48 p-6 flex items-center justify-around gap-4">
   <div class="flex flex-col gap-3">
+    {% if page_title.size > 10 %}
+      {% assign title = page_title | truncatewords: 2 | replace: '...', '' %}
+    {% else %}
+      {% assign title = page_title %}
+    {% endif %}
     <h2 class="text-3xl font-medium text-gray-800">
-      {{ page_title }}
+      {{ title }}
     </h2>
     <p class="font-light text-gray-500 text-sm">Very us move be blessed multiply night</p>
   </div>
   <div class="font-light text-gray-500 text-sm ">
     <a href="/" class="hover:text-lime-500">Home</a>
     /
-    <a href="{{request.path}}" class="hover:text-lime-500">{{page_title}}</a>
+    <a href="{{request.path}}" class="hover:text-lime-500">{{ title }}</a>
   </div>
 </div>
