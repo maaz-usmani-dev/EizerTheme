@@ -5,30 +5,38 @@
       <form
         action="{{routes.search_url}}"
         method="get"
-        class="border flex rounded">
+        class="border flex rounded"
+      >
         <input
           type="search"
           name="q"
           placeholder="Search"
           value="{{search.terms| escape}}"
-          class="px-4 py-2 w-80 border-none">
-        <button type="submit" class="bg-gray-800 hover:bg-gray-500 text-white border px-4">Search</button>
+          class="px-4 py-2 w-80 border-none"
+        >
+        <button
+          type="submit"
+          class="bg-lime-500 hover:bg-transparent text-white hover:text-lime-500 border border-transparent hover:border-lime-500 px-4"
+        >
+          Search
+        </button>
       </form>
     </div>
     {% if search.performed %}
       {% if search.results.size > 0 %}
         <div class="max-w-6xl mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {% for item in search.results %}
-                  {% case item.object_type %}
-                    {% when 'product' %}
-                      {% render 'product-card'
-                        , product: item %}
-                      {% else %}
-        
-                  {% endcase %}
-                {% endfor %}
-            </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {% for item in search.results %}
+              {% case item.object_type %}
+                {% when 'product' %}
+                  {% render 'product-card', product: item %}
+                {% when 'article' %}
+                  {% render 'blog2', article: item %}
+                {% else %}
+
+              {% endcase %}
+            {% endfor %}
+          </div>
         </div>
       {% else %}
         <div class="text-center my-4">
@@ -36,7 +44,6 @@
         </div>
       {% endif %}
     {% endif %}
-    {% render 'pagination'
-      , paginate: paginate %}
+    {% render 'pagination', paginate: paginate %}
   {% endpaginate %}
 </div>

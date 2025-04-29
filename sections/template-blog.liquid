@@ -6,11 +6,13 @@
         <div class="max-w-3xl mx-auto text-gray-600">{{ blog.description }}</div>
       {% endif %}
     </div>
-    <div class="flex gap-6 justify-between">
-      <div class="flex flex-col gap-8 w-full">
-        {% for article in blog.articles %}
-          {% render 'blog2', article: article %}
-        {% endfor %}
+    <div class="flex gap-6 justify-between w-full">
+      <div class="flex flex-col gap-8 max-w-full">
+        <div id="blog-container">
+          {% for article in blog.articles %}
+            {% render 'blog2', article: article %}
+          {% endfor %}
+        </div>
       </div>
       {% render 'search-blog', blog: blog %}
     </div>

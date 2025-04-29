@@ -19,13 +19,12 @@
   </head>
   <body>
     {% section 'header' %}
-    {% unless request.path == routes.root_url or request.path == routes.account_login_url %}
+    {% unless request.path == routes.root_url or request.path == routes.account_login_url or request.path == routes.search_url %}
       {% section 'top' %}
     {% endunless %}
     <main role="main">
       {{ content_for_layout }}
     </main>
-    {{ 'https://unpkg.com/swiper@8/swiper-bundle.min.js' | script_tag }}
     <script defer src="https://unpkg.com/alpinejs@3.13.5/dist/cdn.min.js"></script>
     {% section 'footer' %}
   </body>
