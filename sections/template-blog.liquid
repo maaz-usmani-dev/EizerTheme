@@ -7,14 +7,16 @@
       {% endif %}
     </div>
     <div class="flex gap-6 justify-between w-full">
-      <div class="flex flex-col gap-8 max-w-full">
+      <div class="flex flex-col gap-10 max-w-full">
         <div id="blog-container">
           {% for article in blog.articles %}
             {% render 'blog2', article: article %}
           {% endfor %}
         </div>
       </div>
-      {% render 'search-blog', blog: blog %}
+      <div class="flex flex-col w-md">
+        {% render 'search-blog', blog: blog %}
+      </div>
     </div>
     {% render 'pagination', paginate: paginate %}
   {%- endpaginate -%}

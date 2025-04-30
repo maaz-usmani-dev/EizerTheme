@@ -1,5 +1,5 @@
-<div class="flex gap-4 flex-col">
-  <div class="p-6 bg-[#fafafa] rounded-lg">
+<div class="flex gap-4 flex-col w-md">
+  <div class="p-6 bg-[#fafafa] rounded-lg w-1/2">
     <!-- Search Box -->
     <form action="/search" method="get" class="mb-6">
       <input type="hidden" name="type" value="article">
@@ -20,7 +20,7 @@
     </form>
   </div>
   <!-- Blog Categories with Counts -->
-  <div class="p-6 bg-[#fafafa] rounded-lg">
+  <div class="p-6 bg-[#fafafa] rounded-lg w-1/2">
     <div class="bg-[#f9f9f9] p-4 rounded-md">
       <h3 class="text-xl font-semibold mb-4">Category</h3>
       <ul class="space-y-3">
@@ -42,6 +42,73 @@
           {% endfor %}
         </ul>
       </ul>
+    </div>
+  </div>
+  <div class="p-6 bg-[#fafafa] rounded-lg w-1/2">
+    <div class="bg-[#f9f9f9] p-8 rounded-md">
+      <h3 class="text-xl font-semibold mb-4">Recent Post</h3>
+      <hr class="text-gray-600">
+      <div class="space-y-3 mt-4">
+        {% for article in blog.articles limit: 4 %}
+          <a class="flex gap-4 hover:shadow hover:text-lime-500 p-4" href="{{article.url}}">
+            <img src="{{article.image| img_url: 'small'}}" alt="" width="" height="">
+            <div class="flex flex-col">
+              <span class="text-inherit">{{ article.title | escape | truncate: 15 }}</span>
+              <span class="text-black">{{ article.published_at | date: '%b %d, %Y' }}</span>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="p-6 bg-[#fafafa] rounded-lg w-1/2">
+    {% assign tags = blog.all_tags %}
+    <div class="bg-[#f9f9f9] p-8 rounded-md">
+      <h3 class="text-xl font-semibold mb-4">Tag Clouds</h3>
+      <hr class="text-gray-600">
+      <div class="space-y-3 mt-4 flex flex-wrap gap-3">
+        {% for tag in tags %}
+          <a
+            class="p-4 border border-gray-400 rounded-md bg-white text-gray-400 hover:bg-lime-500 hover:text-white"
+            href="{{blog.url}}/tagged/{{tag.handle}}"
+          >
+            {{- tag -}}
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="p-6 bg-[#fafafa] rounded-lg w-1/2">
+    <div class="bg-[#f9f9f9] p-8 rounded-md">
+      <h3 class="text-xl font-semibold mb-4">Instagram Feeds</h3>
+      <hr class="text-gray-600">
+      <div class="space-y-3 mt-4 flex flex-wrap gap-3">
+        {% for article in blog.articles %}
+          <div class="flex flex-wrap">
+            <a href="{{article.url}}">
+              <img src="{{article.image| img_url: 'small'}}" alt="" width="" height="">
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="p-6 bg-[#fafafa] rounded-lg w-1/2">
+    <div class="bg-[#f9f9f9] p-8 rounded-md">
+      <h3 class="text-xl font-semibold mb-4">Newsletter</h3>
+      <hr class="text-gray-600">
+      <input
+        type="email"
+        name="email"
+        id="email"
+        class="w-full mt-4 px-6 py-2 border border-gray-300 rounded-md focus:outline-none"
+        placeholder="Email Address"
+      >
+      <input
+        type="submit"
+        value="Subscribe"
+        class="bg-lime-500 border border-transparent mt-4 text-white px-6 py-2 uppercase font-medium rounded-md hover:text-lime-500 hover:bg-transparent hover:border-lime-500"
+      >
     </div>
   </div>
 </div>
