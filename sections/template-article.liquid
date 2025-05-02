@@ -1,195 +1,179 @@
-<article>
-  <div class="flex justify-center items-center">
-    <div class="max-w-7xl text-center">
-      <a href="{{blog.url}}" class="text-base uppercase text-gray-500 hover:text-gray-800 font-bold">
-        {{- blog.title -}}
-      </a>
-      <h1 class="text-4xl md:text-6xl font-medium">{{ article.title }}</h1>
-    </div>
-  </div>
-  <div class="flex justify-center items-center">
-    <div
-      class="max-w-7xl text-center"
-    >
-      {% if section.settings.Author %}
-        <small>{{ article.author }}</small>
+<div class="flex gap-8 w-screen justify-around m-4">
+  <div>
+    <article class="max-w-3xl mx-auto px-4 sm:px-6 py-8">
+      <!-- Featured Image -->
+      {% if article.image %}
+        <div class="mb-6 rounded-lg overflow-hidden">
+          <img
+            src="{{ article.image | img_url: 'master' }}"
+            alt="{{ article.title }}"
+            class="w-full h-auto object-cover"
+            width=""
+            height=""
+          >
+        </div>
       {% endif %}
-    </div>
-  </div>
-  {% if section.settings.Date %}
-    <div class="flex justify-center items-center">
-      <div class="max-w-7xl text-center">
-        <time datetime="{{article.published_at | date:format: 'on_date'}}">
-          {{ article.published_at | date: '%Y-%m-%d' }}
-        </time>
+  
+      <!-- Title -->
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">{{ article.title }}</h1>
+  
+      <!-- Meta Information -->
+      <div class="flex items-center text-sm text-gray-600 mb-6">
+        {% if article.tags.size > 0 %}
+          <span class="flex items-center">
+            {% for tag in article.tags %}
+              <a href="/blogs/{{ blog.handle }}/tagged/{{ tag | handleize }}" class="hover:underline hover:text-lime-500">
+                {{- tag -}}
+              </a>
+              {%- unless forloop.last %},&nbsp;&nbsp;&nbsp;{% endunless %}
+            {% endfor %}
+          </span>
+        {% endif %}
       </div>
-    </div>
-  {% endif %}
-  <div class="max-w-7xl bg-blue-300 rounded-lg mx-2 md:mx-auto overflow-hidden p-2 my-3">
-    {% if article.image != blank %}
-      <img
-        src="{{article.image | image_url: width: 500 }}"
-        alt="{{article.image.alt}}"
-        height=""
-        width=""
-        class="w-full h-80 md:h-96 object-cover object-center"
-      >
-    {% else %}
-      {% assign placeholder = 'lifestyle-2' %}
-      {{ placeholder | placeholder_svg_tag: 'w-full h-80 md:h-96 object-cover object-center' }}
-    {% endif %}
-  </div>
-  <div class="flex justify-center items-center">
-    <div class="max-w-7xl text-center">
-      {{ article.content }}
-    </div>
-  </div>
-</article>
-
-{% if blog.comments_enabled? %}
-  <div id="comments" class="my-8">
-    {% if article.comments_count > 0 %}
-      <div class="max-w-4xl mx-auto">
-        <h2 class="text-lg font-medium mb-4 px-3">Comments</h2>
-        {% paginate article.comments by 10 %}
-          {% for comment in article.comments %}
-            <div class="mb-6 border-b pb-4 px-3">
-              <div class="flex items-center justify-between mb-2">
-                <span class="font-bold">{{ comment.author }}</span>
-                <span class="text-sm text-gray-500">{{ comment.created_at | date: '%b %d, %Y' }}</span>
-              </div>
-              <p class="text-gray-600">{{ comment.content }}</p>
-            </div>
-          {% endfor %}
-        {% endpaginate %}
+  
+      <!-- Content -->
+      <div class="prose prose-lg max-w-none text-gray-700">
+        {{ article.content }}
       </div>
-    {% else %}
-      <p class="text-center">There are no comments yet</p>
-    {% endif %}
-  </div>
-
-  <div id="form">
-    {% if article %}
-      {% form 'new_comment', article %}
-        <div class="flex-1 mx-auto items-center justify-center max-w-4xl px-4">
-          {% if form.errors %}
-            <div class="border p-5 mb-4 bg-red-100 border-red-500 mx-3">
-              <div class="flex flex-row items-center w-full mb-3">
-                <div class="text-red-500">
-                  {% render 'icon-failed' %}
-                </div>
-                <div class="text-sm font-medium ml-3">Oh no! Your comment was not posted</div>
-              </div>
-              <ul class="px-4 list-decimal">
-                {% for error in form.errors %}
-                  <li class="text-xs">
-                    <span>{{ form.errors.messages[error] }}</span>
-                  </li>
-                {% endfor %}
-              </ul>
-            </div>
-          {% elsif form.posted_successfully? %}
-            <div class="flex flex-row items-center w-full my-5 p-5 bg-green-100 border-green-500 mx-3">
-              <div class="text-green-500">
-                {% render 'icon-success' %}
-              </div>
-              <div class="text-sm font-medium ml-3">Comment was posted successfully!</div>
-            </div>
-          {% endif %}
-          <div class="px-1 md:flex mb-3">
-            <div class="px-3 md:w-1/2">
-              <label for="author" class="text-gray-500 font-medium uppercase text-xs mb-2">Name</label>
-              <input
-                type="text"
-                name="comment[author]"
-                id="author"
-                class="w-full text-gray-600 border py-3 focus:outline-blue-400 px-4"
-                placeholder="John Doe"
-                required
+  
+      <!-- Social Interactions -->
+      <div class="mt-8 pt-6 border-t border-gray-200">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-2">
+            <button class="flex items-center text-gray-600 hover:text-gray-900">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-            </div>
-            <div class="px-3 md:w-1/2">
-              <label for="email" class="text-gray-500 font-medium uppercase text-xs mb-2">Email</label>
-              <input
-                type="email"
-                name="comment[email]"
-                id="email"
-                class="w-full text-gray-600 border py-3 focus:outline-blue-400 px-4"
-                placeholder="example@123.com"
-                required
-              >
-            </div>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
+              <span>Like</span>
+            </button>
+            <span class="text-sm text-gray-600">0 people like this</span>
           </div>
-
-          <div class="px-1 md:flex mb-3">
-            <div class="md:w-full px-3">
-              <label for="content" class="text-gray-500 font-medium uppercase text-xs mb-2"> Comment </label>
-              <textarea
-                class="w-full resize-none text-gray-500 h-20 px-3 py-4 focus:outline-blue-400 border"
-                name="comment[body]"
-                id="content"
-                required
-              ></textarea>
-            </div>
-          </div>
-
-          <div class="px-1 md:flex mb-3">
-            <div class="md:w-full px-3">
-              <input
-                type="submit"
-                class="cursor-pointer w-full bg-gray-500 hover:bg-gray-700 text-white font-bold p-3 rounded-lg"
-                value="Post Comment"
+  
+          <div class="flex items-center space-x-4">
+            <a href="#comments" class="flex items-center text-gray-600 hover:text-gray-900">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 mr-1"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              <span>Comments</span>
+            </a>
+  
+            <div class="flex items-center space-x-2">
+              <a
+                href="https://facebook.com/share?u={{ shop.url }}{{ article.url }}"
+                target="_blank"
+                class="text-gray-600 hover:text-blue-600"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M18.77 7.46H14.5v-1.9c0-.9.6-1.1 1-1.1h3V.5h-4.33C10.24.5 9.5 3.44 9.5 5.32v2.15h-3v4h3v12h5v-12h3.85l.42-4z"/>
+                </svg>
+              </a>
+              <a
+                href="https://twitter.com/intent/tweet?url={{ shop.url }}{{ article.url }}&text={{ article.title }}"
+                target="_blank"
+                class="text-gray-600 hover:text-blue-400"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M23.44 4.83c-.8.37-1.5.38-2.22.02.93-.56.98-.96 1.32-2.02-.88.52-1.86.9-2.9 1.1-.82-.88-2-1.43-3.3-1.43-2.5 0-4.55 2.04-4.55 4.54 0 .36.03.7.1 1.04-3.77-.2-7.12-2-9.36-4.75-.4.67-.6 1.45-.6 2.3 0 1.56.8 2.95 2 3.77-.74-.03-1.44-.23-2.05-.57v.06c0 2.2 1.56 4.03 3.64 4.44-.67.2-1.37.2-2.06.08.58 1.8 2.26 3.12 4.25 3.16C5.78 18.1 3.37 18.74 1 18.46c2 1.3 4.4 2.04 6.97 2.04 8.35 0 12.92-6.92 12.92-12.93 0-.2 0-.4-.02-.6.9-.63 1.96-1.22 2.56-2.14z"/>
+                </svg>
+              </a>
+              <a
+                href="https://pinterest.com/pin/create/button/?url={{ shop.url }}{{ article.url }}&media={{ article.image | img_url: 'large' }}&description={{ article.title }}"
+                target="_blank"
+                class="text-gray-600 hover:text-red-600"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.401.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.354-.629-2.758-1.379l-.749 2.848c-.269 1.045-1.004 2.352-1.498 3.146 1.123.345 2.306.535 3.55.535 6.607 0 11.985-5.365 11.985-11.987C23.97 5.39 18.592.026 11.985.026L12.017 0z"/>
+                </svg>
+              </a>
             </div>
           </div>
         </div>
-      {% endform %}
-    {% endif %}
+      </div>
+    </article>
+  
+    <!-- Comments Section -->
+    <section id="comments" class="max-w-3xl mx-auto px-4 sm:px-6 py-8 border-t border-gray-200">
+      <h2 class="text-2xl font-bold mb-6">Comments</h2>
+  
+      {% if article.comments %}
+        {% for comment in article.comments %}
+          <div class="mb-6 pb-6 border-b border-gray-200 last:border-0">
+            <div class="flex items-start">
+              <div>
+                <h4 class="font-medium">{{ comment.author }}</h4>
+                <p class="text-sm text-gray-600 mb-2">{{ comment.created_at | date: '%B %d, %Y' }}</p>
+                <div class="text-gray-700">
+                  {{ comment.content }}
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-gray-600">No comments yet. Be the first to comment!</p>
+      {% endif %}
+  
+      <!-- Comment Form -->
+      <div class="mt-8">
+        <h3 class="text-xl font-bold mb-4">Leave a Comment</h3>
+        {% form 'new_comment', article %}
+          <div class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="comment_author" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <input
+                  type="text"
+                  id="comment_author"
+                  name="comment[author]"
+                  required
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md"
+                >
+              </div>
+              <div>
+                <label for="comment_email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input
+                  type="email"
+                  id="comment_email"
+                  name="comment[email]"
+                  required
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md"
+                >
+              </div>
+            </div>
+            <div>
+              <label for="comment_body" class="block text-sm font-medium text-gray-700 mb-1">Comment</label>
+              <textarea
+                id="comment_body"
+                name="comment[body]"
+                rows="4"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-md"
+              ></textarea>
+            </div>
+            <button
+              type="submit"
+              class="px-4 py-2 bg-lime-500 text-white border border-transparent font-medium rounded-md hover:bg-transparent hover:text-lime-500 hover:border-lime-500"
+            >
+              Post Comment
+            </button>
+          </div>
+        {% endform %}
+      </div>
+    </section>
   </div>
-{% endif %}
-{% schema %}
-{
-  "name": "Template-article",
-  "settings": [
-    {
-      "type": "checkbox",
-      "id": "Author",
-      "default": true,
-      "label": "Display Author"
-    },
-    {
-      "type": "checkbox",
-      "id": "Date",
-      "default": true,
-      "label": "Display Published Date"
-    }
-  ],
-  "blocks": [
-    {
-      "type": "article_title",
-      "name": "Title",
-      "limit": 1
-    },
-    {
-      "type": "article_author",
-      "name": "Author",
-      "limit": 1
-    },
-    {
-      "type": "article_date",
-      "name": "Published Date",
-      "limit": 1
-    },
-    {
-      "type": "article_thumbnail",
-      "name": "Thumbnail",
-      "limit": 1
-    },
-    {
-      "type": "article_content",
-      "name": "Content",
-      "limit": 1
-    }
-  ]
-}
-{% endschema %}
+  <div>
+    {% render 'search-blog', blog: blog %}
+  </div>
+</div>
