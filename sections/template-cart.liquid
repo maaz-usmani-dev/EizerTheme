@@ -15,8 +15,9 @@
         <table class="table-auto divide-y divide-gray-300 my-4 w-full ">
           <thead>
             <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Product</th>
+            <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Price</th>
             <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Quantity</th>
-            <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Total Price</th>
+            <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Total</th>
           </thead>
           <tbody id="cart-items">
             {% for item in cart.items %}
@@ -48,6 +49,9 @@
                   >
                     Remove
                   </a>
+                </td>
+                <td class="py-4 px-2">
+                  {{ item.price | money }}
                 </td>
                 <td class="py-4 px-2">
                   <input
@@ -114,91 +118,3 @@
     </div>
   </div>
 {% endif %}
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const cartWrapper = document.getElementById('cart-items');
-    const cartTotal = document.getElementById('cart-total');
-    const emptyCartHtml = `
-    <div class="max-w-6xl h-60 flex items-center justify-center my-4 mx-auto">
-      <div class="text-center">
-        <h1 class="text-3xl my-4">Your Cart is Empty</h1>
-        <div class="my-4 py-4">
-          <a
-            href="/collections/all"
-            class="border border-white bg-lime-500 text-white hover:bg-white hover:text-lime-500 hover:border-lime-500 text-center px-8 py-4 rounded-xl"
-          >Continue Shopping</a>
-        </div>
-      </div>
-    </div>
-  `;
-
-    // Handle quantity update
-    document.querySelectorAll('input[type="number"][data-key]').forEach((input) => {
-      input.addEventListener('change', (e) => {
-        const key = input.dataset.key;
-        const quantity = parseInt(input.value);
-        fetch('/cart/change.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: key, quantity: quantity }),
-        })
-          .then((res) => res.json())
-          .then((cart) => {
-            // Update line total
-            const line = input.closest('tr');
-            const price = parseFloat(input.dataset.price);
-            const lineTotalCell = line.querySelector('.line-total');
-            lineTotalCell.textContent = formatMoney(price * quantity);
-            // Update cart total
-            cartTotal.textContent = formatMoney(cart.total_price);
-            const cartCountEl = document.querySelector('#cartCount');
-            if (cartCountEl) {
-              cartCountEl.textContent = cart.item_count;
-            }
-          });
-      });
-    });
-
-    // Handle item removal
-    document.querySelectorAll('.remove-item').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const key = btn.dataset.key;
-        fetch('/cart/change.js', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: key, quantity: 0 }),
-        })
-          .then((res) => res.json())
-          .then((cart) => {
-            // Remove row from table
-            btn.closest('tr').remove();
-
-            const cartCountEl = document.querySelector('#cartCount');
-            // If cart is empty, show empty layout
-            if (cart.items.length === 0) {
-              const mainCartContainer = document.querySelector('#Container');
-              if (mainCartContainer) {
-                mainCartContainer.innerHTML = emptyCartHtml;
-              }
-              if (cartCountEl) {
-                cartCountEl.textContent = '';
-              }
-            } else {
-              // Update cart total
-              cartTotal.textContent = formatMoney(cart.total_price);
-              if (cartCountEl) {
-                cartCountEl.textContent = cart.item_count;
-              }
-            }
-          });
-      });
-    });
-
-    function formatMoney(cents) {
-      const amount = (cents / 100).toFixed(2);
-      return `Rs.${amount}`;
-    }
-  });
-</script>

@@ -1,0 +1,118 @@
+<div class="w-1/4 flex shadow justify-end bg-green-500" id="Container">
+  {% if cart.item_count > 0 %}
+    <div class="p-4 bg-purple-600">
+      <div class="max-w-6xl flex flex-col mx-auto my-10 bg-amber-900">
+        <div class="flex items-end justify-between my-5">
+          <h1 class="text-3xl">Your Cart</h1>
+          <a
+            href="{{routes.all_products_collection_url}}"
+            class="text-blue-500 hover:text-blue-700 font-medium underline"
+            >Continue Shopping</a
+          >
+        </div>
+      </div>
+      <div class="max-w-6xl flex flex-col my-10 mx-auto bg-emerald-800">
+        <form action="{{routes.cart_url}}" method="post" novalidate>
+          <div class="flex flex-col bg-pink-500">
+            <tbody>
+              {% for item in cart.items %}
+                <tr class="table-row cart-item bg-fuchsia-500" data-key="{{item.key}}">
+                  <td class="py-4 px-2 flex flex-col bg-indigo-600 justify-center">
+                    <a href="{{item.url}}">
+                      {% if item.image %}
+                        <img
+                          src="{{item.image | image_url: width: '200' }}"
+                          alt="{{item.image.alt}}"
+                          class="w-20 h-20 object-cover border"
+                          height=""
+                          width=""
+                        >
+                      {% else %}
+                        {{ 'product-1' | placeholder_svg_tag: 'w-20 h-20 object-cover border ' }}
+                      {% endif %}
+                    </a>
+                  </td>
+                  <td class="py-4 px-2 flex flex-col justify-center bg-slate-400">
+                    <a href="{{item.url}}" class="my-1">{{ item.product.title | truncatewords: 5 }}</a>
+                    <span class="text-sm text-gray-500 my-1">
+                      {{ item.variant.title }}
+                    </span>
+                    <a
+                      href="javascript:void(0)"
+                      class="text-sm font-medium text-red-500 my-1 remove-item"
+                      data-key="{{item.key}}"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="size-6"
+                      >
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                      </svg>
+                    </a>
+                  </td>
+                  <td class="py-4 px-2 bg-cyan-600">
+                    {{ item.price | money }}
+                  </td>
+                  <td class="py-4 px-2 bg-blue-600">
+                    <input
+                      type="number"
+                      name="updates[]"
+                      value="{{item.quantity}}"
+                      class="w-20 border p-2 cart-qty"
+                      min="1"
+                      id="updates_{{forloop.index}}"
+                      data-key="{{ item.key }}"
+                      data-price="{{ item.final_line_price | divided_by: item.quantity }}"
+                    >
+                  </td>
+                  <td class="py-4 px-2 line-total bg-yellow-500">
+                    {{ item.final_line_price | money }}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </div>
+          <div class="flex flex-col md:flex-row items-center bg-orange-200 justify-between">
+            <div class="w-full my-4 md:w-80">
+              <h3 class="text-xl" id="cart-total">{{ cart.total_price | money }}</h3>
+              <div class="my-2">
+                <a
+                  href="{{routes.cart_url}}"
+                  class="w-full p-3 border border-lime-600 font-medium bg-lime-500 text-white"
+                >
+                  Go to Cart
+                </a>
+              </div>
+              <div class="my-2">
+                <button
+                  type="submit"
+                  name="checkout"
+                  class="w-full p-3 border border-lime-600 font-medium bg-lime-500 text-white"
+                >
+                  Checkout
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  {% else %}
+    <div class="max-w-6xl h-60 bg-pink-900 flex items-center justify-center my-4 mx-auto">
+      <div class="text-center bg-green-800">
+        <h1 class="text-3xl my-4">Your Cart is Empty</h1>
+        <div class="my-4 py-4">
+          <a
+            href="{{routes.all_products_collection_url}}"
+            class="border border-white bg-lime-500 text-white hover:bg-white hover:text-lime-500 hover:border-lime-500 text-center px-8 py-4 rounded-xl"
+            >Continue Shopping</a
+          >
+        </div>
+      </div>
+    </div>
+  {% endif %}
+</div>
