@@ -1,5 +1,5 @@
 {% if cart.item_count > 0 %}
-  <div class="p-4" id="Container">
+  <div class="p-4" id="cart-wrapper">
     <div class="max-w-6xl flex flex-col mx-auto my-10">
       <div class="flex items-end justify-between my-5">
         <h1 class="text-3xl">Your Cart</h1>
@@ -12,12 +12,14 @@
     </div>
     <div class="max-w-6xl flex flex-col my-10 mx-auto">
       <form action="{{routes.cart_url}}" method="post" novalidate>
-        <table class="table-auto divide-y divide-gray-300 my-4 w-full ">
+        <table class="table-auto divide-y divide-gray-300 my-4 w-full">
           <thead>
-            <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Product</th>
-            <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Price</th>
-            <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Quantity</th>
-            <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Total</th>
+            <tr>
+              <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Product</th>
+              <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Price</th>
+              <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Quantity</th>
+              <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Total Price</th>
+            </tr>
           </thead>
           <tbody id="cart-items">
             {% for item in cart.items %}
@@ -29,8 +31,8 @@
                         src="{{item.image | image_url: width: '200' }}"
                         alt="{{item.image.alt}}"
                         class="w-20 h-20 object-cover border"
-                        height=""
                         width=""
+                        height=""
                       >
                     {% else %}
                       {{ 'product-1' | placeholder_svg_tag: 'w-20 h-20 object-cover border ' }}
@@ -80,7 +82,7 @@
             </div>
           </div>
           <div class="w-full my-4 md:w-80">
-            <h3 class="text-xl" id="cart-total">{{ cart.total_price | money }}</h3>
+            <h3 class="text-xl" id="cart-Total">{{ cart.total_price | money }}</h3>
             <div class="my-2">
               <button
                 type="submit"
@@ -105,7 +107,7 @@
     </div>
   </div>
 {% else %}
-  <div class="max-w-6xl h-60 flex items-center justify-center my-4 mx-auto" id="Container">
+  <div class="max-w-6xl h-60 flex items-center justify-center my-4 mx-auto" id="cart-wrapper">
     <div class="text-center">
       <h1 class="text-3xl my-4">Your Cart is Empty</h1>
       <div class="my-4 py-4">
@@ -118,3 +120,78 @@
     </div>
   </div>
 {% endif %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const cartWrapper = document.getElementById('cart-items');
+    const cartTotal = document.getElementById('cart-Total');
+    const container = document.getElementById('cart-wrapper');
+    const cartCountEl = document.getElementById('cartCount');
+    const emptyCartHtml = `
+        <div class="max-w-6xl h-60 flex items-center justify-center my-4 mx-auto">
+          <div class="text-center">
+            <h1 class="text-3xl my-4">Your Cart is Empty</h1>
+            <div class="my-4 py-4">
+              <a href="/collections/all"
+                class="border border-white bg-lime-500 text-white hover:bg-white hover:text-lime-500 hover:border-lime-500 text-center px-8 py-4 rounded-xl">
+                Continue Shopping
+              </a>
+            </div>
+          </div>
+        </div>`;
+
+    function formatMoney(cents) {
+      const amount = (cents / 100).toLocaleString('en-PK', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
+      return `Rs. ${amount}`;
+    }
+
+    // Quantity Update
+    document.querySelectorAll('input[type="number"][data-key]').forEach((input) => {
+      input.addEventListener('change', () => {
+        const key = input.dataset.key;
+        const quantity = parseInt(input.value);
+        fetch('/cart/change.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: key, quantity: quantity }),
+        })
+          .then((res) => res.json())
+          .then((cart) => {
+            const line = input.closest('tr');
+            const price = parseFloat(input.dataset.price);
+            const lineTotalCell = line.querySelector('.line-total');
+            lineTotalCell.textContent = formatMoney(price * quantity);
+            cartTotal.textContent = formatMoney(cart.total_price);
+            if (cartCountEl) cartCountEl.textContent = cart.item_count;
+          });
+      });
+    });
+
+    // Item Removal
+    document.querySelectorAll('.remove-item').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const key = btn.dataset.key;
+        fetch('/cart/change.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: key, quantity: 0 }),
+        })
+          .then((res) => res.json())
+          .then((cart) => {
+            btn.closest('tr').remove();
+            if (cart.items.length === 0) {
+              container.innerHTML = emptyCartHtml;
+              if (cartCountEl) cartCountEl.textContent = '';
+            } else {
+              cartTotal.textContent = formatMoney(cart.total_price);
+              if (cartCountEl) cartCountEl.textContent = cart.item_count;
+            }
+          });
+      });
+    });
+  });
+</script>

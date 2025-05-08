@@ -206,7 +206,7 @@
   </div>
 </div>
 <script>
-  const variantIdToImage = {
+  const variantImage = {
     {% for variant in product.variants %}
       {% if variant.featured_image %}
         "{{ variant.id }}": "{{ variant.featured_image.src | img_url: 'master' }}",
@@ -214,7 +214,7 @@
     {% endfor %}
   };
 
-  const productImages = [
+  const productImg = [
     {% for image in product.images %}
       "{{ image.src | img_url: 'master' }}",
     {% endfor %}
@@ -223,25 +223,25 @@
 
 <script>
   function incrementQuantity() {
-    const input = document.getElementById('Quantity');
-    input.value = parseInt(input.value) + 1;
+    const input_val = document.getElementById('Quantity');
+    input_val.value = parseInt(input_val.value) + 1;
   }
 
   function decrementQuantity() {
-    const input = document.getElementById('Quantity');
-    if (parseInt(input.value) > 1) {
-      input.value = parseInt(input.value) - 1;
+    const input_val = document.getElementById('Quantity');
+    if (parseInt(input_val.value) > 1) {
+      input.value = parseInt(input_val.value) - 1;
     }
   }
 
   function slideToImage(index) {
-    const wrapper = document.getElementById('MainImageWrapper');
-    const mainImageSizeEm = 32; // your main image width/height in em
-    const fontSizePx = parseFloat(getComputedStyle(document.documentElement).fontSize); // 1em in px
-    const imageWidthPx = mainImageSizeEm * fontSizePx; // final width in px
+    const Imgwrapper = document.getElementById('MainImageWrapper');
+    const mainImgSize = 32; // your main image width/height in em
+    const fontSize = parseFloat(getComputedStyle(document.documentElement).fontSize); // 1em in px
+    const imgWidthPx = mainImgSize * fontSize; // final width in px
 
-    const offset = index * imageWidthPx;
-    wrapper.style.transform = `translateX(-${offset}px)`;
+    const offset = index * imgWidthPx;
+    Imgwrapper.style.transform = `translateX(-${offset}px)`;
   }
 
   class Variant extends HTMLElement {
@@ -289,45 +289,45 @@
       if (!this.current) return;
 
       // ✅ Update Price with Rs. instead of PKR
-      const priceElement = document.getElementById('price-section');
-      if (priceElement) {
-        const formattedPrice = `Rs. ${(this.current.price / 100).toLocaleString()}`;
-        let priceHTML = `<span class="variant-price">${formattedPrice}</span>`;
+      const elementPrice = document.getElementById('price-section');
+      if (elementPrice) {
+        const formatPrice = `Rs. ${(this.current.price / 100).toLocaleString()}`;
+        let priceHTM = `<span class="variant-price">${formatPrice}</span>`;
 
         if (this.current.compare_at_price && this.current.compare_at_price > this.current.price) {
           const formattedCompareAtPrice = `Rs. ${(this.current.compare_at_price / 100).toLocaleString()}`;
-          priceHTML += `<span class="text-base text-gray-600 line-through ml-2">${formattedCompareAtPrice}</span>`;
+          priceHTM += `<span class="text-base text-gray-600 line-through ml-2">${formattedCompareAtPrice}</span>`;
         }
 
-        priceElement.innerHTML = priceHTML;
+        elementPrice.innerHTML = priceHTM;
       }
 
       // Update Availability
-      const availabilityElement = document.getElementById('variant-availability');
-      if (availabilityElement) {
-        availabilityElement.innerHTML = `: <span class="${this.current.available ? 'text-lime-600' : 'text-red-600'}">
+      const availableElement = document.getElementById('variant-availability');
+      if (availableElement) {
+        availableElement.innerHTML = `: <span class="${this.current.available ? 'text-lime-600' : 'text-red-600'}">
           ${this.current.available ? 'In Stock' : 'Out of Stock'}
         </span>`;
       }
 
       // Update Add to Cart button
-      const addToCartButton = document.getElementById('AddToCart');
-      if (addToCartButton) {
+      const addToCart = document.getElementById('AddToCart');
+      if (addToCart) {
         if (this.current.available) {
-          addToCartButton.disabled = false;
-          addToCartButton.textContent = 'Add to Cart';
+          addToCart.disabled = false;
+          addToCart.textContent = 'Add to Cart';
         } else {
-          addToCartButton.disabled = true;
-          addToCartButton.textContent = 'Sold Out';
+          addToCart.disabled = true;
+          addToCart.textContent = 'Sold Out';
         }
       }
 
       // ✅ Slide to correct image
-      if (variantIdToImage[this.current.id]) {
-        const variantImageSrc = variantIdToImage[this.current.id];
-        const matchingIndex = productImages.findIndex((img) => img === variantImageSrc);
-        if (matchingIndex !== -1) {
-          slideToImage(matchingIndex);
+      if (variantImage[this.current.id]) {
+        const variantSrc = variantImage[this.current.id];
+        const matchIndex = productImg.findIndex((img) => img === variantSrc);
+        if (matchIndex !== -1) {
+          slideToImage(matchIndex);
         }
       }
     }

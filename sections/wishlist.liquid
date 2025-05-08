@@ -1,4 +1,4 @@
-<div class="flex justify-center items-center flex-wrap gap-5 mt-5" id="Container"></div>
+<div class="flex justify-center items-center flex-wrap gap-5 mt-5" id="wishlist-wrapper"></div>
 <script>
   const getList = () => {
     const list = localStorage.getItem('wishlist');
@@ -13,7 +13,7 @@
   };
 
   let list = getList();
-  let container = document.querySelector('#Container');
+  let container = document.querySelector('#wishlist-wrapper');
 
   const saveList = (newList) => {
     localStorage.setItem('wishlist', JSON.stringify(newList));

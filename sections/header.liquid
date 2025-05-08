@@ -1,7 +1,5 @@
 <header class="bg-[#f6f6f6] flex justify-around p-2 text-xs uppercase">
-  <span>
-    PHONE: +01 256 25 235 &nbsp;|&nbsp; EMAIL: info@eiser.com
-  </span>
+  <span> PHONE: +01 256 25 235 &nbsp;|&nbsp; EMAIL: info@eiser.com </span>
   <span>
     GIFT CARD &nbsp;&nbsp;&nbsp;| &nbsp;&nbsp;&nbsp;TRACK ORDER &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; CONTACT US
   </span>
@@ -17,14 +15,16 @@
             src="{{ 'logo.png' | asset_url }}"
             alt=""
             width=""
-            height="">
+            height=""
+          >
         </a>
       </div>
       <div class="-mr-2 -my-2 ml-3 ">
         <button
           x-on:click="mobileMenuOpen=true"
           type="button"
-          class="bg-white p-2 md:hidden inline-flex items-center justify-center focus:outline-none">
+          class="bg-white p-2 md:hidden inline-flex items-center justify-center focus:outline-none"
+        >
           {% render 'icon-menu' %}
         </button>
       </div>
@@ -36,7 +36,8 @@
               <button
                 x-on:mouseenter="activeDropdown = '{{ link.title }}'"
                 type="button"
-                class="inline-flex font-medium items-center text-sm text-gray-800 hover:text-lime-500 uppercase ">
+                class="inline-flex font-medium items-center text-sm text-gray-800 hover:text-lime-500 uppercase "
+              >
                 {{ link.title }}
                 {% render 'drop-down' %}
               </button>
@@ -45,10 +46,14 @@
                   <div
                     x-show="activeDropdown === '{{ link.title }}'"
                     class="border-t border-gray-100 shadow z-50 uppercase"
-                    x-cloak>
+                    x-cloak
+                  >
                     <div class="bg-white min-w-[200px]">
                       {% for sublink in link.links %}
-                        <a class="p-4 flex items-start hover:text-white hover:bg-lime-500 whitespace-nowrap" href="{{ sublink.url }}">
+                        <a
+                          class="p-4 flex items-start hover:text-white hover:bg-lime-500 whitespace-nowrap"
+                          href="{{ sublink.url }}"
+                        >
                           <div>
                             <p class="text-inherit text-sm">{{ sublink.title }}</p>
                           </div>
@@ -64,7 +69,8 @@
               <a
                 href="{{link.url}}"
                 class="text-sm font-medium uppercase text-gray-800 mx-4 hover:text-lime-500 {% if link.active %} text-lime-500 {% endif %}"
-                x-on:mouseenter="activeDropdown = null">
+                x-on:mouseenter="activeDropdown = null"
+              >
                 {{- link.title -}}
               </a>
             </div>
@@ -76,28 +82,47 @@
         <button
           type="button"
           class="whitespace-nowrap text-base text-gray-800 hover:text-lime-500 mx-4"
-          x-on:click="searchBarOpen=true">
+          x-on:click="searchBarOpen=true"
+        >
           {% render 'icon-search' %}
         </button>
-        <a href="{{routes.cart_url}}" class="whitespace-nowrap text-sm mx-4 text-gray-800 hover:text-lime-500 relative {% if request.path == routes.cart_url  %} text-lime-500 font-medium {% endif %}">
-          <span class=" absolute -top-4 right-0 w-4 bg-lime-500 text-xs rounded-lg text-center text-black mb-1" id="cartCount">
+        <a
+          href="#"
+          x-on:click="cartDrawerOpen = !cartDrawerOpen"
+          class="whitespace-nowrap text-sm mx-4 text-gray-800 hover:text-lime-500 relative {% if request.path == routes.cart_url  %} text-lime-500 font-medium {% endif %}"
+          id="cart-icon"
+        >
+          <span
+            class=" absolute -top-4 right-0 w-4 bg-lime-500 text-xs rounded-lg text-center text-black mb-1"
+            id="cartCount"
+          >
             {% if cart.item_count > 0 %}
               {{ cart.item_count }}
             {% endif %}
           </span>
           {% render 'shopping-icon' %}
-        </a>
+        </a>        
         <a href="/pages/wishlist" class="relative text-sm font-medium text-gray-800 hover:text-lime-500 mx-4 uppercase">
           {%- render 'wishlist-icon' -%}
-          <span class=" absolute -top-4 right-0 w-4 bg-lime-500 text-xs rounded-lg text-center text-black mb-1" id="wishCount"></span>
+          <span
+            class=" absolute -top-4 right-0 w-4 bg-lime-500 text-xs rounded-lg text-center text-black mb-1"
+            id="wishCount"
+          ></span>
         </a>
         {% if shop.customer_accounts_enabled %}
           {% if customer %}
-            <a href="{{routes.account_url}}" class="text-sm font-medium text-gray-800 hover:text-lime-500 mx-4 uppercase">
+            <a
+              href="{{routes.account_url}}"
+              class="text-sm font-medium text-gray-800 hover:text-lime-500 mx-4 uppercase"
+            >
               {%- render 'icon-account' -%}
             </a>
           {% else %}
-            <a href="{{routes.account_login_url}}" class="text-sm font-medium text-gray-800 hover:text-lime-500 mx-4 uppercase">Login</a>
+            <a
+              href="{{routes.account_login_url}}"
+              class="text-sm font-medium text-gray-800 hover:text-lime-500 mx-4 uppercase"
+              >Login</a
+            >
           {% endif %}
         {% endif %}
       </div>
@@ -115,7 +140,8 @@
               <button
                 type="button"
                 x-on:click="mobileMenuOpen=false"
-                class="bg-white rounded-md p-2 text-gray-500">
+                class="bg-white rounded-md p-2 text-gray-500"
+              >
                 {% render 'close-icon' %}
               </button>
             </div>
@@ -131,13 +157,17 @@
                     <button
                       x-on:click="activeDropdown === '{{ link_handle }}' ? activeDropdown = null : activeDropdown = '{{ link_handle }}'"
                       type="button"
-                      class="text-base text-gray-500 hover:text-gray-900 flex items-center justify-between w-full">
+                      class="text-base text-gray-500 hover:text-gray-900 flex items-center justify-between w-full"
+                    >
                       <div>{{ link.title }}</div>
                       {% render 'drop-down' %}
                     </button>
                     <div x-show="activeDropdown === '{{ link_handle }}'" class="grid gap-y-7 py-3">
                       {% for sublink in link.links %}
-                        <a href="{{sublink.url}}" class="-m-3 p-3 mt-2 flex items-center rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-50">
+                        <a
+                          href="{{sublink.url}}"
+                          class="-m-3 p-3 mt-2 flex items-center rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                        >
                           <span class="ml-3 text-base font-medium text-gray-500">{{ sublink.title }}</span>
                         </a>
                       {% endfor %}
@@ -147,7 +177,8 @@
                   <a
                     href="{{link.url}}"
                     class="-m-3 p-3 flex items-center rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-50"
-                    x-on:click="activeDropdown = null">
+                    x-on:click="activeDropdown = null"
+                  >
                     {{ link.title }}
                   </a>
                 {% endif %}
@@ -163,9 +194,9 @@
       <button
         x-on:click="searchBarOpen=false"
         class="absolute top-6 right-4 text-gray-500 hover:text-gray-700 transition-colors"
-        aria-label="Close search">
-        {% render 'close-icon'
-          , class: 'w-6 h-6' %}
+        aria-label="Close search"
+      >
+        {% render 'close-icon', class: 'w-6 h-6' %}
       </button>
 
       <div class="max-w-2xl mx-auto">
@@ -173,7 +204,8 @@
           action="{{routes.search_url}}"
           method="get"
           role="search"
-          class="relative">
+          class="relative"
+        >
           <div class="relative">
             <input
               type="search"
@@ -182,20 +214,22 @@
               placeholder="Search products..."
               aria-label="Search products"
               autocomplete="off"
-              autofocus>
+              autofocus
+            >
             <button
               type="submit"
               class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-primary-600 transition-colors"
-              aria-label="Submit search">
-              {% render 'icon-search'
-                , class: 'w-8 h-8' %}
+              aria-label="Submit search"
+            >
+              {% render 'icon-search', class: 'w-8 h-8' %}
             </button>
           </div>
 
           <input
             type="hidden"
             name="type"
-            value="product">
+            value="product"
+          >
         </form>
       </div>
     </div>
@@ -203,21 +237,22 @@
 </div>
 
 {% schema %}
-  {
-    "name": "Header",
-    "settings": [
-      {
-        "type": "text",
-        "id": "mobile_menu",
-        "label": "Title",
-        "default": "Menu",
-        "info": "Mobile Window"
-      }, {
-        "type": "link_list",
-        "id": "menu",
-        "label": "Header",
-        "default": "main-menu"
-      }
-    ]
-  }
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "text",
+      "id": "mobile_menu",
+      "label": "Title",
+      "default": "Menu",
+      "info": "Mobile Window"
+    },
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Header",
+      "default": "main-menu"
+    }
+  ]
+}
 {% endschema %}

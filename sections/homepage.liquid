@@ -76,7 +76,7 @@
 <h1 class="uppercase text-center text-2xl font-medium my-16">latest blog</h1>
 <p class="text-center text-gray-500 text-sm">Bring called seed first of third give itself now ment</p>
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6 px-4">
-  {% for article in blogs["news"].articles limit: 3 %}
+  {% for article in blogs.news.articles limit: 3 %}
     {% render 'blog-card', article: article %}
   {% endfor %}
 </div>
