@@ -1,10 +1,10 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <!-- Back Link + Collection Title -->
   <div class="mb-8">
-    <a class="text-md md:text-md font-light text-gray-900 hover:underline hover:font-medium" href="/collections">Back to Collections</a>
+    <a class="text-md md:text-md font-light text-gray-900 hover:underline hover:font-medium" href="/collections">
+      Back to Collections
+    </a>
     <h1 class="text-3xl md:text-4xl font-bold text-gray-900">{{ collection.title }}</h1>
-    {% if collection.description != blank %}
-      <div class="mt-4 text-gray-600">{{ collection.description }}</div>
-    {% endif %}
   </div>
 
   {% if collection.products.size == 0 %}
@@ -12,29 +12,154 @@
       <p class="text-lg text-gray-600">No products found in this collection</p>
     </div>
   {% else %}
-    {% paginate collection.products by section.settings.products_per_page %}
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {% for product in collection.products %}
-          {% render 'product-card'
-            , product: product %}
-        {% endfor %}
+    <!-- Filters + Products Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <!-- FILTERS -->
+      <div class="lg:col-span-1 rounded p-4 bg-white">
+        <form method="get" action="{{ collection.url }}" id="collection-filters">
+          <div class="flex flex-col gap-4">
+            {% for filter in collection.filters %}
+              {% if filter.label contains 'Price' %}
+                {% assign price_filter_name = 'filter.v.price.lte' %}
+                <div class="mb-6 shadow border border-slate-300 flex flex-col gap-6 p-8 bg-[#f6f6f6]">
+                  <h1 class="font-bold text-gray-700 mb-2 underline decoration-lime-500 decoration-3 underline-offset-5 hover:text-gray-900">
+                    {{ filter.label }}
+                  </h1>
+
+                  <div class="flex items-center gap-3">
+                    <input
+                      type="range"
+                      name="{{ price_filter_name }}"
+                      id="price-slider"
+                      min="0"
+                      max="7000"
+                      step="100"
+                      value="{{ request.params[price_filter_name] | default: 7000 }}"
+                      class="w-full"
+                      oninput="document.getElementById('price-value').innerText = this.value"
+                    >
+                    <span id="price-value" class="text-gray-800 font-medium">
+                      {{ request.params[price_filter_name] | default: 7000 }}
+                    </span>
+                  </div>
+                </div>
+              {% else %}
+                <div class="mb-6 shadow border border-slate-300 flex flex-col gap-3 p-8 bg-[#f6f6f6]">
+                  <h1 class="font-bold text-gray-700 mb-2 underline decoration-lime-500 decoration-3 underline-offset-5 hover:text-gray-900">
+                    {{ filter.label }}
+                  </h1>
+                  {% for value in filter.values %}
+                    <div class="flex items-center mb-1">
+                      <input
+                        type="checkbox"
+                        id="{{ filter.param_name | append: '-' | append: value.value | handle }}"
+                        name="{{ filter.param_name }}"
+                        value="{{ value.value }}"
+                        {% if value.active %}
+                          checked
+                        {% endif %}
+                        class="mr-2"
+                      >
+                      <label
+                        for="{{ filter.param_name | append: '-' | append: value.value | handle }}"
+                        class="text-sm text-gray-700 hover:text-lime-500 hover:underline"
+                      >
+                        {{ value.label }}
+                      </label>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          <!-- Optional fallback for mobile users -->
+          <button type="submit" class="block lg:hidden mt-4 bg-black text-white px-4 py-2 rounded hover:bg-gray-800">
+            Apply Filters
+          </button>
+        </form>
       </div>
-      {% render "pagination"
-        , paginate: paginate %}
-    {% endpaginate %}
+
+      <!-- PRODUCT GRID -->
+      <div class="lg:col-span-3">
+        <div id="ajax-product-grid">
+          {% paginate collection.products by section.settings.products_per_page %}
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {% for product in collection.products %}
+                {% render 'product-card', product: product %}
+              {% endfor %}
+            </div>
+            {% render 'pagination', paginate: paginate %}
+          {% endpaginate %}
+        </div>
+      </div>
+    </div>
   {% endif %}
 </div>
 
+<!-- AJAX FILTERING SCRIPT -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('collection-filters');
+    const grid = document.getElementById('ajax-product-grid');
+
+    if (!form || !grid) return;
+
+    let debounceTimer;
+
+    const submitForm = () => {
+      const formData = new FormData(form);
+      const searchParams = new URLSearchParams(formData).toString();
+      const url = `${form.action}?${searchParams}`;
+
+      grid.classList.add('opacity-50', 'pointer-events-none');
+
+      fetch(url)
+        .then((response) => {
+          if (!response.ok) throw new Error('Network error');
+          return response.text();
+        })
+        .then((html) => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const newGrid = doc.getElementById('ajax-product-grid');
+
+          if (newGrid) {
+            grid.innerHTML = newGrid.innerHTML;
+            history.pushState({}, '', url);
+          }
+        })
+        .catch((error) => {
+          console.error('AJAX filtering error:', error);
+        })
+        .finally(() => {
+          grid.classList.remove('opacity-50', 'pointer-events-none');
+        });
+    };
+
+    form.addEventListener('change', submitForm);
+
+    const priceSlider = document.getElementById('price-slider');
+    if (priceSlider) {
+      priceSlider.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(submitForm, 300); // Debounce
+      });
+    }
+  });
+</script>
+
+<!-- SCHEMA SETTINGS -->
 {% schema %}
-  {
-    "name": "Template Collection",
-    "settings": [
-      {
-        "type": "number",
-        "id": "products_per_page",
-        "default": 6,
-        "label": "No of Products Per Page"
-      }
-    ]
-  }
+{
+  "name": "Template Collection",
+  "settings": [
+    {
+      "type": "number",
+      "id": "products_per_page",
+      "default": 6,
+      "label": "No of Products Per Page"
+    }
+  ]
+}
 {% endschema %}

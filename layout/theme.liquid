@@ -21,6 +21,34 @@
         display: none; !important
       }
     </style>
+    <style>
+      /* Style range thumbs */
+      .slider-thumb::-webkit-slider-thumb {
+        appearance: none;
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background: #7ed321;
+        cursor: pointer;
+        border: none;
+        margin-top: -7px;
+        z-index: 30;
+        position: relative;
+      }
+      .slider-thumb::-moz-range-thumb {
+        height: 16px;
+        width: 16px;
+        border-radius: 50%;
+        background: #7ed321;
+        cursor: pointer;
+        border: none;
+      }
+
+      /* Hide default track background */
+      .slider-thumb {
+        background: none;
+      }
+    </style>
     <script async src="{{ 'application.js' | asset_url }}"></script>
   </head>
   <body>
