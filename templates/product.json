@@ -18,17 +18,27 @@
       "blocks": {
         "doran_product_reviews_home_showcase_widget_7iTYrD": {
           "type": "shopify://apps/doran-product-reviews/blocks/home-showcase-widget/ca90c3ee-bc39-4c25-90cd-fdf0519c6d11",
-          "settings": {}
+          "settings": {
+            "topPadding": 36,
+            "bottomPadding": 36,
+            "is_use_shopify_font": false,
+            "shopify_font": "helvetica_n4"
+          }
         }
       },
       "block_order": [
         "doran_product_reviews_home_showcase_widget_7iTYrD"
       ],
       "settings": {}
+    },
+    "174972203034f47ca5": {
+      "type": "apps",
+      "settings": {}
     }
   },
   "order": [
     "template",
-    "1749721644fd35a0f6"
+    "1749721644fd35a0f6",
+    "174972203034f47ca5"
   ]
 }
